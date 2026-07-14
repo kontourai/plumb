@@ -1,0 +1,6 @@
+[Unit]
+Description=plumb: run deployment checks with AI escalation
+
+[Service]
+Type=oneshot
+ExecStart=%h/plumb/bin/plumb-run

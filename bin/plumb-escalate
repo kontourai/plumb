@@ -1,0 +1,32 @@
+#!/bin/bash
+# Hand failure evidence to a guardrailed agent in ITS OWN clone.
+set -uo pipefail
+CONFIG="${PLUMB_CONFIG:-$(dirname "$0")/../plumb.config}"
+# shellcheck source=/dev/null
+source "$CONFIG"
+CONTEXT_NAME="${1:?usage: plumb-escalate <name> <log-file>}"
+LOG_PATH="${2:?usage: plumb-escalate <name> <log-file>}"
+EVIDENCE=$(tail -c 4000 "$LOG_PATH" 2>/dev/null || echo "log unavailable")
+
+# The agent never works in the deploy checkout: a wrong move cannot leak into
+# a production build. Full tool permissions are safe inside this boundary.
+if [ ! -d "$AGENT_WORKDIR/.git" ]; then
+  mkdir -p "$(dirname "$AGENT_WORKDIR")" && git clone -q "$REPO_URL" "$AGENT_WORKDIR"
+fi
+git -C "$AGENT_WORKDIR" fetch -q origin && git -C "$AGENT_WORKDIR" reset -q --hard origin/main
+
+bash -lc "cd '$AGENT_WORKDIR' && $AGENT_CMD 'You are the on-call maintenance agent for this deployment.
+
+An automated check or job named \"$CONTEXT_NAME\" failed. Evidence (log tail):
+---
+$EVIDENCE
+---
+
+Diagnose the root cause. Read ${CONTEXT_DOCS:-the repo docs} first. You may inspect services, containers, and logs, and run READ-ONLY queries against databases.
+
+STRICT GUARDRAILS:
+- Never modify or delete production data; SELECT-only against any database.
+- Never commit to main, never force-push, never touch secrets files.
+- Confident code/config fix: branch auto/fix-<short-name>, commit, push the branch, open a PR (gh pr create) describing cause and fix. Do NOT merge.
+- Uncertain or environmental cause (disk, network, upstream outage): file an issue titled \"[auto] $CONTEXT_NAME failing\" with full diagnosis and recommendation — check for an existing open issue with that title first and comment instead of duplicating.
+- End with a one-paragraph summary of what you did.'" >> "${LOG_FILE%.log}-escalations.log" 2>&1

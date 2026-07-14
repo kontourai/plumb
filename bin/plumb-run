@@ -1,0 +1,16 @@
+#!/bin/bash
+# Run the configured checks; escalate to the agent on any failure.
+set -uo pipefail
+CONFIG="${PLUMB_CONFIG:-$(dirname "$0")/../plumb.config}"
+# shellcheck source=/dev/null
+source "$CONFIG"
+mkdir -p "$(dirname "$LOG_FILE")"
+{
+  echo "=== $(date -Is) plumb checks"
+  eval "$CHECKS_CMD"
+} >>"$LOG_FILE" 2>&1
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+  "$(dirname "$0")/plumb-escalate" "checks" "$LOG_FILE"
+fi
+exit 0
