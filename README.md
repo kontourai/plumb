@@ -39,8 +39,30 @@ cp plumb.config.example plumb.config     # repo URL, checks cmd, agent cmd
 cp systemd/plumb-checks.* ~/.config/systemd/user/ && systemctl --user enable --now plumb-checks.timer
 ```
 
-See `examples/` for the OpenTherapist checks script shape and a post-deploy
+Your `plumb.config` usually lives **with your deployment**, not inside this repo
+— point plumb at it with `PLUMB_CONFIG=/path/to/plumb.config` (env, or the
+systemd unit's `Environment=`). Both `plumb-run` and `plumb-escalate` honor it.
+
+See `examples/` for the pure checks script, a shell `CHECKS_CMD` wrapper
+(functional + soft checks), standalone escalation from any job, and a post-deploy
 self-check hook (deploys that break something summon their own fixer).
+
+## Escalate from any job
+
+`plumb-escalate <context-name> <log-file>` is a standalone primitive — you don't
+have to go through `plumb-run`. Any scheduled job can hand its own failure to the
+same guardrailed agent, with the same guards (per-context cooldown, daily cap,
+per-context lock):
+
+```bash
+export PLUMB_CONFIG=~/infra/myapp/plumb.config
+if ! ingest data.zip; then
+  ~/plumb/bin/plumb-escalate "myapp-refresh (ingest)" "$LOG"
+fi
+```
+
+Give each failure mode a distinct context name so a flapping step is deduped on
+its own cooldown rather than against the others. See `examples/job-with-escalation.sh`.
 
 ## Why an agent and not a pager
 

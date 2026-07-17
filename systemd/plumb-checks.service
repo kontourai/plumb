@@ -3,4 +3,8 @@ Description=plumb: run deployment checks with AI escalation
 
 [Service]
 Type=oneshot
+# Point PLUMB_CONFIG at your config if it lives outside the plumb repo (the
+# common case — you don't fork plumb to configure it). Defaults to
+# %h/plumb/plumb.config when unset.
+Environment=PLUMB_CONFIG=%h/plumb/plumb.config
 ExecStart=%h/plumb/bin/plumb-run

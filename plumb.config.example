@@ -5,3 +5,10 @@ AGENT_WORKDIR="$HOME/agent-work/your-app"     # dedicated clone, never the deplo
 AGENT_CMD="claude -p --dangerously-skip-permissions"   # or: codex exec
 LOG_FILE="$HOME/.local/state/plumb/checks.log"
 CONTEXT_DOCS="docs/AUTOMATION.md docs/DEPLOY.md"       # agent reads these first
+
+# This file usually lives WITH your deployment, not inside the plumb repo. Point
+# plumb at it with PLUMB_CONFIG (env or the systemd unit's Environment=); both
+# plumb-run and plumb-escalate honor it. Escalation guards are tunable here too:
+#   PLUMB_ESCALATE_COOLDOWN_SECS=21600   # per-context cooldown (default 6h)
+#   PLUMB_ESCALATE_DAILY_CAP=8           # max escalations/day across contexts
+#   PLUMB_STATE_DIR="$(dirname "$LOG_FILE")/state"   # guard state lives here
