@@ -167,27 +167,41 @@ function isDirectory(directory: string): boolean {
   }
 }
 
+function gitEnvironment(): NodeJS.ProcessEnv {
+  const environment = { ...process.env };
+  for (const name of ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_PREFIX", "GIT_COMMON_DIR"]) {
+    delete environment[name];
+  }
+  return environment;
+}
+
 function prepareAgentWorkspace(config: PlumbConfig): void {
+  const env = gitEnvironment();
   if (!isDirectory(path.join(config.AGENT_WORKDIR, ".git"))) {
     mkdirSync(path.dirname(config.AGENT_WORKDIR), { recursive: true });
-    spawnSync("git", ["clone", "-q", config.REPO_URL, config.AGENT_WORKDIR], { stdio: "inherit" });
+    spawnSync("git", ["clone", "-q", config.REPO_URL, config.AGENT_WORKDIR], { env, stdio: "inherit" });
   }
-  const fetched = spawnSync("git", ["-C", config.AGENT_WORKDIR, "fetch", "-q", "origin"], { stdio: "inherit" });
+  const fetched = spawnSync("git", ["-C", config.AGENT_WORKDIR, "fetch", "-q", "origin"], { env, stdio: "inherit" });
   if (fetched.status === 0) {
-    spawnSync("git", ["-C", config.AGENT_WORKDIR, "reset", "-q", "--hard", "origin/main"], { stdio: "inherit" });
+    spawnSync("git", ["-C", config.AGENT_WORKDIR, "reset", "-q", "--hard", "origin/main"], { env, stdio: "inherit" });
   }
 }
 
 function deployDiffstat(config: PlumbConfig, deployContext: DeployContext | undefined): string | undefined {
   if (!deployContext?.previousSha) return undefined;
+  const env = gitEnvironment();
   for (const sha of [deployContext.previousSha, deployContext.sha]) {
-    const verified = spawnSync("git", ["-C", config.AGENT_WORKDIR, "rev-parse", "--verify", "--quiet", `${sha}^{commit}`]);
+    const verified = spawnSync(
+      "git",
+      ["-C", config.AGENT_WORKDIR, "rev-parse", "--verify", "--quiet", `${sha}^{commit}`],
+      { env },
+    );
     if (verified.status !== 0) return undefined;
   }
   const diff = spawnSync(
     "git",
     ["-C", config.AGENT_WORKDIR, "diff", "--stat", "--no-ext-diff", `${deployContext.previousSha}..${deployContext.sha}`],
-    { encoding: "utf8" },
+    { encoding: "utf8", env },
   );
   if (diff.status !== 0) return undefined;
   return diff.stdout.trim() || "(no files changed)";

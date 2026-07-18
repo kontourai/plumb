@@ -34,6 +34,39 @@ function fixture(overrides: Partial<PlumbConfig> = {}) {
   };
 }
 
+function realDeployFixture(value: ReturnType<typeof fixture>) {
+  const gitEnvironment = { ...process.env };
+  for (const name of ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_PREFIX", "GIT_COMMON_DIR"]) {
+    delete gitEnvironment[name];
+  }
+  const source = path.join(value.root, "source");
+  mkdirSync(source);
+  execFileSync("git", ["init", "-q", "-b", "main"], { cwd: source, env: gitEnvironment });
+  execFileSync("git", ["config", "user.name", "Plumb Test"], { cwd: source, env: gitEnvironment });
+  execFileSync("git", ["config", "user.email", "plumb@example.test"], { cwd: source, env: gitEnvironment });
+  writeFileSync(path.join(source, "app.txt"), "first\n");
+  execFileSync("git", ["add", "app.txt"], { cwd: source, env: gitEnvironment });
+  execFileSync("git", ["commit", "-q", "-m", "first"], { cwd: source, env: gitEnvironment });
+  const previousSha = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: source,
+    encoding: "utf8",
+    env: gitEnvironment,
+  }).trim();
+  writeFileSync(path.join(source, "app.txt"), "first\nsecond\n");
+  execFileSync("git", ["commit", "-q", "-am", "second"], { cwd: source, env: gitEnvironment });
+  const sha = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: source,
+    encoding: "utf8",
+    env: gitEnvironment,
+  }).trim();
+  const promptFile = path.join(value.root, "prompt.txt");
+  const captureScript = path.join(value.root, "capture.mjs");
+  writeFileSync(captureScript, `import { writeFileSync } from "node:fs"; writeFileSync(${JSON.stringify(promptFile)}, process.argv[2]);\n`);
+  value.config.REPO_URL = source;
+  value.config.AGENT_CMD = `${process.execPath} ${captureScript}`;
+  return { previousSha, promptFile, sha };
+}
+
 test("cooldown suppresses a second escalation inside the configured window", () => {
   const value = fixture();
   try {
@@ -194,23 +227,7 @@ STRICT GUARDRAILS:
 test("real escalation computes a deploy diffstat in the clean agent clone", () => {
   const value = fixture();
   try {
-    const source = path.join(value.root, "source");
-    mkdirSync(source);
-    execFileSync("git", ["init", "-q", "-b", "main"], { cwd: source });
-    execFileSync("git", ["config", "user.name", "Plumb Test"], { cwd: source });
-    execFileSync("git", ["config", "user.email", "plumb@example.test"], { cwd: source });
-    writeFileSync(path.join(source, "app.txt"), "first\n");
-    execFileSync("git", ["add", "app.txt"], { cwd: source });
-    execFileSync("git", ["commit", "-q", "-m", "first"], { cwd: source });
-    const previousSha = execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
-    writeFileSync(path.join(source, "app.txt"), "first\nsecond\n");
-    execFileSync("git", ["commit", "-q", "-am", "second"], { cwd: source });
-    const sha = execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
-    const promptFile = path.join(value.root, "prompt.txt");
-    const captureScript = path.join(value.root, "capture.mjs");
-    writeFileSync(captureScript, `import { writeFileSync } from "node:fs"; writeFileSync(${JSON.stringify(promptFile)}, process.argv[2]);\n`);
-    value.config.REPO_URL = source;
-    value.config.AGENT_CMD = `${process.execPath} ${captureScript}`;
+    const { previousSha, promptFile, sha } = realDeployFixture(value);
 
     assert.equal(escalate("checks", value.logFile, value.config, {
       deployContext: { sha, previousSha },
@@ -220,6 +237,23 @@ test("real escalation computes a deploy diffstat in the clean agent clone", () =
     assert.match(prompt, new RegExp(`${previousSha}\\.\\.${sha}`));
     assert.match(prompt, /app\.txt\s+\|\s+1 \+/);
   } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
+test("real escalation ignores inherited Git hook context when computing deploy diffstat", () => {
+  const value = fixture();
+  const originalGitDir = process.env.GIT_DIR;
+  try {
+    const { previousSha, promptFile, sha } = realDeployFixture(value);
+    process.env.GIT_DIR = path.join(value.root, "bogus-git-dir");
+    assert.equal(escalate("checks", value.logFile, value.config, {
+      deployContext: { sha, previousSha },
+    }).escalated, true);
+    assert.match(readFileSync(promptFile, "utf8"), /app\.txt\s+\|\s+1 \+/);
+  } finally {
+    if (originalGitDir === undefined) delete process.env.GIT_DIR;
+    else process.env.GIT_DIR = originalGitDir;
     rmSync(value.root, { recursive: true, force: true });
   }
 });
