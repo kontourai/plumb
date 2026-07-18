@@ -1,6 +1,7 @@
 export { loadConfig, type PlumbConfig } from "./config.js";
 export {
   escalate,
+  type DeployContext,
   type EscalateOptions,
   type EscalateResult,
   type RunAgentInput,

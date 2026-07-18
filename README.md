@@ -30,6 +30,20 @@ plumb escalate database-refresh /var/log/my-app/database-refresh.log
 side effect; suppression guards or agent outcomes do not turn the scheduled
 check runner into a failing job.
 
+At the end of a deployment, attach the deployed commit:
+
+```bash
+plumb run --context deploy="$DEPLOY_SHA"
+```
+
+The optional context is a single `key=value` pair. It tags the run's log header
+and is otherwise inert unless the key is `deploy` and the value is a 7–64 digit
+hex Git SHA. Deploy SHAs are normalized to lowercase. A malformed context emits
+a one-line warning and is ignored without changing `plumb run`'s zero exit.
+A deploy failure tells the maintenance agent which commit just landed. When
+plumb has seen a different deploy SHA previously, it also supplies the verified
+Git range and diffstat from the clean agent clone.
+
 ## Configuration
 
 Start from [`plumb.config.example`](plumb.config.example). It is a bash key/value
@@ -60,6 +74,10 @@ Escalation guards are tunable through the config or environment:
 - `PLUMB_ESCALATE_DAILY_CAP` defaults to `8` across all contexts.
 - `PLUMB_STATE_DIR` defaults to a `state` directory beside `LOG_FILE`.
 
+Deploy-context runs keep the latest valid SHA in `PLUMB_STATE_DIR/deploy-sha`.
+This is only a one-value pointer for enriching the next deploy failure; it is
+not a run-history store.
+
 ## Escalate from any job
 
 `plumb escalate <context> <log>` is a standalone primitive. Any cron job,
@@ -82,7 +100,7 @@ complete two-step cron-job pattern.
 import { escalate, loadConfig, run } from "@kontourai/plumb";
 
 const config = loadConfig(process.env.PLUMB_CONFIG);
-run(config);
+run(config, { context: `deploy=${process.env.DEPLOY_SHA}` });
 escalate("custom-job", "/var/log/custom-job.log", config);
 ```
 
@@ -90,10 +108,14 @@ escalate("custom-job", "/var/log/custom-job.log", config);
 
 1. Checks may be written in any language. They should print useful evidence
    and exit non-zero if any hard check fails.
-2. `plumb run` appends the check output and escalates failures.
+2. `plumb run` appends the check output and escalates failures. An optional
+   `--context key=value` tags the log header; `deploy=<sha>` also carries deploy
+   provenance into escalation.
 3. The escalator resets a dedicated clone to `origin/main`, gives the last
    4000 log bytes to the configured agent, and enforces lock, cooldown, and
-   daily-cap guards before expensive work.
+   daily-cap guards before expensive work. A new deploy SHA gets its own
+   cooldown signature while remaining subject to the same base-context lock
+   and global daily cap.
 4. The agent prompt forbids production-data writes, commits to main,
    force-pushes, and secret-file changes. Confident fixes become unmerged PRs;
    uncertain or environmental diagnoses become issues.

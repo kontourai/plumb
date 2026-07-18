@@ -3,13 +3,16 @@ import { escalate } from "./escalate.js";
 import { run } from "./run.js";
 
 const usage = `Usage:
-  plumb run
+  plumb run [--context <key>=<value>]
   plumb escalate <context-name> <log-file>`;
 
 export async function runCli(argv = process.argv.slice(2)): Promise<number> {
   const [command, ...args] = argv;
   try {
     if (command === "run" && args.length === 0) return run(loadConfig());
+    if (command === "run" && args.length === 2 && args[0] === "--context") {
+      return run(loadConfig(), { context: args[1] });
+    }
     if (command === "escalate" && args.length === 2) {
       escalate(args[0]!, args[1]!, loadConfig());
       return 0;

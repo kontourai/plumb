@@ -8,5 +8,6 @@ CONTEXT_DOCS="docs/AUTOMATION.md docs/DEPLOY.md"       # agent reads these first
 
 # Optional escalation guards (shown with defaults):
 # PLUMB_STATE_DIR="$HOME/.local/state/plumb/state"
+# deploy contexts store the latest valid SHA at $PLUMB_STATE_DIR/deploy-sha
 # PLUMB_ESCALATE_COOLDOWN_SECS="21600"        # 6h per context
 # PLUMB_ESCALATE_DAILY_CAP="8"                # all contexts combined, per day

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -75,6 +76,75 @@ test("distinct contexts have independent cooldown guards", () => {
   }
 });
 
+test("guard signatures re-arm cooldown without changing the prompt context", () => {
+  const value = fixture();
+  try {
+    const first = { ...value.options, guardSignature: "deploy:1111111" };
+    const second = { ...value.options, guardSignature: "deploy:2222222" };
+    assert.equal(escalate("checks", value.logFile, value.config, first).escalated, true);
+    assert.equal(escalate("checks", value.logFile, value.config, second).escalated, true);
+    assert.match(value.calls[0]!.prompt, /named "checks" failed/);
+    assert.match(value.calls[1]!.prompt, /named "checks" failed/);
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
+test("deploy signatures share the base context lock", () => {
+  const value = fixture();
+  try {
+    writeFileSync(path.join(value.stateDirectory, "lock-checks"), "another-owner");
+    assert.deepEqual(escalate("checks", value.logFile, value.config, {
+      ...value.options,
+      guardSignature: "deploy:1111111",
+    }), {
+      escalated: false,
+      reason: "already running",
+    });
+    assert.equal(value.calls.length, 0);
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
+test("deploy escalation updates the base cooldown stamp for a following plain run", () => {
+  const value = fixture();
+  try {
+    assert.equal(escalate("checks", value.logFile, value.config, {
+      ...value.options,
+      guardSignature: "deploy:1111111",
+    }).escalated, true);
+    assert.ok(readFileSync(path.join(value.stateDirectory, "last-checks"), "utf8"));
+    assert.deepEqual(escalate("checks", value.logFile, value.config, value.options), {
+      escalated: false,
+      reason: "within 21600s cooldown",
+    });
+    assert.equal(value.calls.length, 1);
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
+test("daily cap binds across different deploy signatures", () => {
+  const value = fixture({ PLUMB_ESCALATE_DAILY_CAP: "1" });
+  try {
+    assert.equal(escalate("checks", value.logFile, value.config, {
+      ...value.options,
+      guardSignature: "deploy:1111111",
+    }).escalated, true);
+    assert.deepEqual(escalate("checks", value.logFile, value.config, {
+      ...value.options,
+      guardSignature: "deploy:2222222",
+    }), {
+      escalated: false,
+      reason: "daily cap 1 reached",
+    });
+    assert.equal(value.calls.length, 1);
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
 test("context slug replaces every non-alphanumeric character", () => {
   const value = fixture();
   try {
@@ -116,6 +186,39 @@ STRICT GUARDRAILS:
 - Confident code/config fix: branch auto/fix-<short-name>, commit, push the branch, open a PR (gh pr create) describing cause and fix. Do NOT merge.
 - Uncertain or environmental cause (disk, network, upstream outage): file an issue titled "[auto] nightly failing" with full diagnosis and recommendation — check for an existing open issue with that title first and comment instead of duplicating.
 - End with a one-paragraph summary of what you did.`);
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
+test("real escalation computes a deploy diffstat in the clean agent clone", () => {
+  const value = fixture();
+  try {
+    const source = path.join(value.root, "source");
+    mkdirSync(source);
+    execFileSync("git", ["init", "-q", "-b", "main"], { cwd: source });
+    execFileSync("git", ["config", "user.name", "Plumb Test"], { cwd: source });
+    execFileSync("git", ["config", "user.email", "plumb@example.test"], { cwd: source });
+    writeFileSync(path.join(source, "app.txt"), "first\n");
+    execFileSync("git", ["add", "app.txt"], { cwd: source });
+    execFileSync("git", ["commit", "-q", "-m", "first"], { cwd: source });
+    const previousSha = execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
+    writeFileSync(path.join(source, "app.txt"), "first\nsecond\n");
+    execFileSync("git", ["commit", "-q", "-am", "second"], { cwd: source });
+    const sha = execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
+    const promptFile = path.join(value.root, "prompt.txt");
+    const captureScript = path.join(value.root, "capture.mjs");
+    writeFileSync(captureScript, `import { writeFileSync } from "node:fs"; writeFileSync(${JSON.stringify(promptFile)}, process.argv[2]);\n`);
+    value.config.REPO_URL = source;
+    value.config.AGENT_CMD = `${process.execPath} ${captureScript}`;
+
+    assert.equal(escalate("checks", value.logFile, value.config, {
+      deployContext: { sha, previousSha },
+    }).escalated, true);
+    const prompt = readFileSync(promptFile, "utf8");
+    assert.match(prompt, new RegExp(`This failure began immediately after deploy ${sha} — diff below`));
+    assert.match(prompt, new RegExp(`${previousSha}\\.\\.${sha}`));
+    assert.match(prompt, /app\.txt\s+\|\s+1 \+/);
   } finally {
     rmSync(value.root, { recursive: true, force: true });
   }
