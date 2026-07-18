@@ -26,9 +26,17 @@ export interface RunAgentInput {
   escalationLog: string;
 }
 
+export interface DeployContext {
+  sha: string;
+  previousSha?: string;
+}
+
 export interface EscalateOptions {
   runAgent?: (input: RunAgentInput) => void;
   now?: () => Date;
+  deployContext?: DeployContext;
+  guardSignature?: string;
+  runContext?: string;
 }
 
 function positiveInteger(value: string | undefined, fallback: number, name: string): number {
@@ -109,13 +117,33 @@ function tailEvidence(logPath: string): string {
   }
 }
 
-function promptFor(context: string, evidence: string, contextDocs: string | undefined): string {
+function promptFor(
+  context: string,
+  evidence: string,
+  contextDocs: string | undefined,
+  deployContext: DeployContext | undefined,
+  runContext: string | undefined,
+  deployDiffstat?: string,
+): string {
+  let deployNote = "";
+  if (deployContext) {
+    if (deployContext.previousSha) {
+      const range = `${deployContext.previousSha}..${deployContext.sha}`;
+      deployNote = deployDiffstat === undefined
+        ? `\n\nThis failure began immediately after deploy ${deployContext.sha}. The previous deploy was ${deployContext.previousSha}; inspect git range ${range}.`
+        : `\n\nThis failure began immediately after deploy ${deployContext.sha} — diff below.\nDeploy git range: ${range}\n---\n${deployDiffstat}\n---`;
+    } else {
+      deployNote = `\n\nThis failure began immediately after deploy ${deployContext.sha}. There is no earlier deploy recorded, so no git range is available.`;
+    }
+  } else if (runContext) {
+    deployNote = `\n\nRun context: ${runContext}.`;
+  }
   return `You are the on-call maintenance agent for this deployment.
 
 An automated check or job named "${context}" failed. Evidence (log tail):
 ---
 ${evidence}
----
+---${deployNote}
 
 Diagnose the root cause. Read ${contextDocs ?? "the repo docs"} first. You may inspect services, containers, and logs, and run READ-ONLY queries against databases.
 
@@ -139,16 +167,47 @@ function isDirectory(directory: string): boolean {
   }
 }
 
-function realRunAgent({ config, prompt, escalationLog }: RunAgentInput): void {
+function gitEnvironment(): NodeJS.ProcessEnv {
+  const environment = { ...process.env };
+  for (const name of ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_PREFIX", "GIT_COMMON_DIR"]) {
+    delete environment[name];
+  }
+  return environment;
+}
+
+function prepareAgentWorkspace(config: PlumbConfig): void {
+  const env = gitEnvironment();
   if (!isDirectory(path.join(config.AGENT_WORKDIR, ".git"))) {
     mkdirSync(path.dirname(config.AGENT_WORKDIR), { recursive: true });
-    spawnSync("git", ["clone", "-q", config.REPO_URL, config.AGENT_WORKDIR], { stdio: "inherit" });
+    spawnSync("git", ["clone", "-q", config.REPO_URL, config.AGENT_WORKDIR], { env, stdio: "inherit" });
   }
-  const fetched = spawnSync("git", ["-C", config.AGENT_WORKDIR, "fetch", "-q", "origin"], { stdio: "inherit" });
+  const fetched = spawnSync("git", ["-C", config.AGENT_WORKDIR, "fetch", "-q", "origin"], { env, stdio: "inherit" });
   if (fetched.status === 0) {
-    spawnSync("git", ["-C", config.AGENT_WORKDIR, "reset", "-q", "--hard", "origin/main"], { stdio: "inherit" });
+    spawnSync("git", ["-C", config.AGENT_WORKDIR, "reset", "-q", "--hard", "origin/main"], { env, stdio: "inherit" });
   }
+}
 
+function deployDiffstat(config: PlumbConfig, deployContext: DeployContext | undefined): string | undefined {
+  if (!deployContext?.previousSha) return undefined;
+  const env = gitEnvironment();
+  for (const sha of [deployContext.previousSha, deployContext.sha]) {
+    const verified = spawnSync(
+      "git",
+      ["-C", config.AGENT_WORKDIR, "rev-parse", "--verify", "--quiet", `${sha}^{commit}`],
+      { env },
+    );
+    if (verified.status !== 0) return undefined;
+  }
+  const diff = spawnSync(
+    "git",
+    ["-C", config.AGENT_WORKDIR, "diff", "--stat", "--no-ext-diff", `${deployContext.previousSha}..${deployContext.sha}`],
+    { encoding: "utf8", env },
+  );
+  if (diff.status !== 0) return undefined;
+  return diff.stdout.trim() || "(no files changed)";
+}
+
+function realRunAgent({ config, prompt, escalationLog }: RunAgentInput): void {
   const descriptor = openSync(escalationLog, "a");
   try {
     const agent = spawnSync(
@@ -178,8 +237,10 @@ export function escalate(
   const dailyCap = positiveInteger(config.PLUMB_ESCALATE_DAILY_CAP, 8, "PLUMB_ESCALATE_DAILY_CAP");
   const now = options.now?.() ?? new Date();
   const nowSeconds = Math.floor(now.getTime() / 1000);
-  const slug = context.replace(/[^A-Za-z0-9]/g, "_");
-  const lockPath = path.join(stateDirectory, `lock-${slug}`);
+  const guardContext = options.guardSignature ? `${context}:${options.guardSignature}` : context;
+  const baseSlug = context.replace(/[^A-Za-z0-9]/g, "_");
+  const cooldownSlug = guardContext.replace(/[^A-Za-z0-9]/g, "_");
+  const lockPath = path.join(stateDirectory, `lock-${baseSlug}`);
   const lockToken = `${process.pid}:${now.getTime()}:${Math.random()}`;
 
   if (!acquireLock(lockPath, lockToken, nowSeconds, cooldownSeconds)) {
@@ -189,7 +250,7 @@ export function escalate(
   }
 
   try {
-    const stampPath = path.join(stateDirectory, `last-${slug}`);
+    const stampPath = path.join(stateDirectory, `last-${cooldownSlug}`);
     if (existsSync(stampPath)) {
       const last = Number.parseInt(readFileSync(stampPath, "utf8"), 10) || 0;
       if (nowSeconds - last < cooldownSeconds) {
@@ -205,9 +266,24 @@ export function escalate(
     }
 
     writeFileSync(stampPath, `${nowSeconds}\n`);
+    if (cooldownSlug !== baseSlug) {
+      writeFileSync(path.join(stateDirectory, `last-${baseSlug}`), `${nowSeconds}\n`);
+    }
     writeFileSync(countPath, `${count + 1}\n`);
     pruneCounters(stateDirectory, now.getTime());
-    const prompt = promptFor(context, tailEvidence(logPath), config.CONTEXT_DOCS);
+    let diffstat: string | undefined;
+    if (options.runAgent === undefined) {
+      prepareAgentWorkspace(config);
+      diffstat = deployDiffstat(config, options.deployContext);
+    }
+    const prompt = promptFor(
+      context,
+      tailEvidence(logPath),
+      config.CONTEXT_DOCS,
+      options.deployContext,
+      options.runContext,
+      diffstat,
+    );
     (options.runAgent ?? realRunAgent)({ config, prompt, escalationLog });
     return { escalated: true };
   } finally {
