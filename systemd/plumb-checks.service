@@ -3,4 +3,7 @@ Description=plumb: run deployment checks with AI escalation
 
 [Service]
 Type=oneshot
-ExecStart=%h/plumb/bin/plumb-run
+# APP is the deployment directory containing its pinned local plumb dependency.
+Environment=PLUMB_CONFIG=%h/infra/APP/plumb.config
+ExecStart=%h/infra/APP/node_modules/.bin/plumb run
+# Alternative (unpinned network resolution): npx @kontourai/plumb run

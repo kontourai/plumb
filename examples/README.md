@@ -1,7 +1,11 @@
 # Examples
 
-- `opentherapist-checks.mjs` — the reference checks script (app health + build
-  SHA match, data-artifact integrity, DB reachability, data freshness). Note
-  the shape: one OK/FAIL line per check, exit code = any-failure.
-- Post-deploy hook: call `plumb-run` at the end of your deploy script so a
-  deploy that breaks something summons its own fixer.
+- `opentherapist-checks.mjs` — the reference pure checker shape: one `OK` or
+  `FAIL` line per check, with a non-zero exit if any check failed.
+- `checks-wrapper.sh` — a `CHECKS_CMD` wrapper combining functional and
+  side-effecting hard checks, a soft warning, and a pure checker while
+  accumulating failures into one final exit code.
+- `job-with-escalation.sh` — a cron-friendly job that calls `plumb escalate`
+  directly for two independently guarded sub-step contexts.
+- Post-deploy hook — run `plumb run` at the end of a deployment so a deploy
+  that breaks a hard check summons its own fixer.

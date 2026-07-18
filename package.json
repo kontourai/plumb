@@ -1,0 +1,52 @@
+{
+  "name": "@kontourai/plumb",
+  "version": "0.0.0",
+  "description": "The surveyor's plumb line: checks that things are true — and calls in repairs when they aren't.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kontourai/plumb.git"
+  },
+  "homepage": "https://github.com/kontourai/plumb#readme",
+  "bugs": {
+    "url": "https://github.com/kontourai/plumb/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "bin": {
+    "plumb": "bin/plumb.mjs"
+  },
+  "files": [
+    "dist/src/",
+    "bin/",
+    "examples/",
+    "systemd/",
+    "plumb.config.example",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "prepare": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "verify": "npm run typecheck && npm test && npm pack --dry-run",
+    "prepublishOnly": "npm run verify"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

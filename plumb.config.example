@@ -1,7 +1,12 @@
-# plumb configuration (sourced by bin/plumb-run and bin/plumb-escalate)
+# plumb configuration; keep this with the deployment and point PLUMB_CONFIG here
 REPO_URL="git@github.com:you/your-app.git"
 CHECKS_CMD="node scripts/checks.mjs"          # prints OK/FAIL lines, exits non-zero on FAIL
 AGENT_WORKDIR="$HOME/agent-work/your-app"     # dedicated clone, never the deploy checkout
 AGENT_CMD="claude -p --dangerously-skip-permissions"   # or: codex exec
 LOG_FILE="$HOME/.local/state/plumb/checks.log"
 CONTEXT_DOCS="docs/AUTOMATION.md docs/DEPLOY.md"       # agent reads these first
+
+# Optional escalation guards (shown with defaults):
+# PLUMB_STATE_DIR="$HOME/.local/state/plumb/state"
+# PLUMB_ESCALATE_COOLDOWN_SECS="21600"        # 6h per context
+# PLUMB_ESCALATE_DAILY_CAP="8"                # all contexts combined, per day
