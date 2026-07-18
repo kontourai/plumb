@@ -1,46 +1,102 @@
-# plumb
+# @kontourai/plumb
 
 *The surveyor's plumb line: checks that things are true — and calls in repairs
 when they aren't.*
 
-Plumb is a tiny self-healing-deployment harness for solo operators and small
-teams: you declare **checks**; plumb runs them on a timer; when one fails, a
-**guardrailed AI agent** (Claude Code, Codex, or any CLI agent) is invoked in
-**its own clone** of your repo to diagnose the failure and open a PR or issue —
-never touching your deploy checkout or production data.
+Plumb is a small, dependency-free TypeScript package for self-healing deployment
+checks. You supply a shell command that reports success or failure. Plumb logs
+the result and, on failure, invokes a guardrailed AI agent in its own clean clone
+to diagnose the problem and open a PR or issue. The deploy checkout and
+production data remain outside the agent's working boundary.
 
-Born inside [OpenTherapist](https://github.com/briananderson1222/opentherapist)
-(its reference deployment), where the first live firing caught two real bugs —
-a container missing git and a cron sidecar whose clock reset on every deploy —
-and the escalation agent correctly refused to act beyond its permissions.
+Born inside [OpenTherapist](https://github.com/briananderson1222/opentherapist),
+where its first live firing found two real deployment bugs.
+
+## Install and run
+
+```bash
+npm install @kontourai/plumb
+PLUMB_CONFIG=/path/to/deployment/plumb.config npx @kontourai/plumb run
+```
+
+With a local dependency, the same CLI is available directly:
+
+```bash
+plumb run
+plumb escalate database-refresh /var/log/my-app/database-refresh.log
+```
+
+`plumb run` always exits zero. A failed `CHECKS_CMD` triggers escalation as a
+side effect; suppression guards or agent outcomes do not turn the scheduled
+check runner into a failing job.
+
+## Configuration
+
+Start from [`plumb.config.example`](plumb.config.example). It is a bash key/value
+file, so quoting, comments, `$HOME` expansion, and existing shell expressions
+continue to work. Plumb loads it by sourcing it in bash.
+
+Your `plumb.config` belongs **with the deployment**, not inside the plumb
+package or repository. Point `PLUMB_CONFIG` at that file in the environment or
+in a systemd `Environment=` line:
+
+```bash
+export PLUMB_CONFIG="$HOME/infra/my-app/plumb.config"
+```
+
+The required keys are:
+
+- `REPO_URL`: repository cloned for the maintenance agent.
+- `CHECKS_CMD`: shell command that exits non-zero when any hard check fails.
+- `AGENT_WORKDIR`: dedicated agent clone, never the deployment checkout.
+- `AGENT_CMD`: headless agent command.
+- `LOG_FILE`: append-only checks log; escalation output uses the corresponding
+  `-escalations.log` file.
+- `CONTEXT_DOCS`: optional docs the agent should read first.
+
+Escalation guards are tunable through the config or environment:
+
+- `PLUMB_ESCALATE_COOLDOWN_SECS` defaults to `21600` (6 hours) per context.
+- `PLUMB_ESCALATE_DAILY_CAP` defaults to `8` across all contexts.
+- `PLUMB_STATE_DIR` defaults to a `state` directory beside `LOG_FILE`.
+
+## Escalate from any job
+
+`plumb escalate <context> <log>` is a standalone primitive. Any cron job,
+timer, or deployment step can route its own failure evidence through the same
+per-context lock, cooldown, global daily cap, clean clone, and guardrailed
+agent. Give each failure mode a distinct context name so unrelated jobs do not
+share cooldown state:
+
+```bash
+plumb escalate database-refresh /var/log/my-app/database-refresh.log
+plumb escalate search-reindex /var/log/my-app/search-reindex.log
+```
+
+See [`examples/job-with-escalation.sh`](examples/job-with-escalation.sh) for a
+complete two-step cron-job pattern.
+
+## Programmatic API
+
+```ts
+import { escalate, loadConfig, run } from "@kontourai/plumb";
+
+const config = loadConfig(process.env.PLUMB_CONFIG);
+run(config);
+escalate("custom-job", "/var/log/custom-job.log", config);
+```
 
 ## The contract
 
-1. **Checks** are any executable that prints one line per check —
-   `OK <name> <detail>` or `FAIL <name> <detail>` — and exits non-zero if any
-   failed. Write them in anything; keep them fast and side-effect-free.
-2. **plumb-run** executes your checks, logs the output, and on failure invokes
-   the escalator with the check name and log path.
-3. **plumb-escalate** maintains a dedicated agent workspace (a separate clone,
-   reset to origin/main each run), then invokes your agent CLI with the
-   evidence and a guardrail prompt:
-   - never modify production data (read-only inspection),
-   - never commit to main or force-push,
-   - confident fix → branch `auto/fix-*`, push, open a PR (never merge),
-   - uncertain → file/append an issue with the full diagnosis,
-   - always end with a one-paragraph summary.
-
-## Quickstart
-
-```bash
-cp plumb.config.example plumb.config     # repo URL, checks cmd, agent cmd
-./bin/plumb-run                          # run checks once, escalate on FAIL
-# install the timer (systemd user units):
-cp systemd/plumb-checks.* ~/.config/systemd/user/ && systemctl --user enable --now plumb-checks.timer
-```
-
-See `examples/` for the OpenTherapist checks script shape and a post-deploy
-self-check hook (deploys that break something summon their own fixer).
+1. Checks may be written in any language. They should print useful evidence
+   and exit non-zero if any hard check fails.
+2. `plumb run` appends the check output and escalates failures.
+3. The escalator resets a dedicated clone to `origin/main`, gives the last
+   4000 log bytes to the configured agent, and enforces lock, cooldown, and
+   daily-cap guards before expensive work.
+4. The agent prompt forbids production-data writes, commits to main,
+   force-pushes, and secret-file changes. Confident fixes become unmerged PRs;
+   uncertain or environmental diagnoses become issues.
 
 ## Why an agent and not a pager
 
