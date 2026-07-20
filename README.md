@@ -26,9 +26,11 @@ plumb run
 plumb escalate database-refresh /var/log/my-app/database-refresh.log
 ```
 
-`plumb run` always exits zero. A failed `CHECKS_CMD` triggers escalation as a
-side effect; suppression guards or agent outcomes do not turn the scheduled
-check runner into a failing job.
+Once config loads, `plumb run` always exits zero. A failed `CHECKS_CMD`
+triggers escalation as a side effect; suppression guards or agent outcomes do
+not turn the scheduled check runner into a failing job. `plumb run` does exit
+non-zero if config loading itself fails (missing `PLUMB_CONFIG` or a missing
+required key) — that is a setup error, not a checks result.
 
 At the end of a deployment, attach the deployed commit:
 
@@ -92,7 +94,10 @@ plumb escalate search-reindex /var/log/my-app/search-reindex.log
 ```
 
 See [`examples/job-with-escalation.sh`](examples/job-with-escalation.sh) for a
-complete two-step cron-job pattern.
+complete two-step cron-job pattern. If you'd rather run `plumb` on a timer
+than from cron, [`systemd/plumb-checks.service`](systemd/plumb-checks.service)
+and [`systemd/plumb-checks.timer`](systemd/plumb-checks.timer) are ready-made
+units.
 
 ## Programmatic API
 
