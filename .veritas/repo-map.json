@@ -66,6 +66,16 @@
         ]
       },
       {
+        "id": "product.additional-areas",
+        "kind": "product-area",
+        "label": "Additional repository product areas",
+        "patterns": [
+          "bin/",
+          "examples/",
+          "systemd/"
+        ]
+      },
+      {
         "id": "delivery.workflows",
         "kind": "delivery-area",
         "label": ".github/**",
