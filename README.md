@@ -3,8 +3,9 @@
 *The surveyor's plumb line: checks that things are true — and calls in repairs
 when they aren't.*
 
-Plumb is a small, dependency-free TypeScript package for self-healing deployment
-checks. You supply a shell command that reports success or failure. Plumb logs
+Plumb is a small, dependency-free TypeScript package that turns failed
+deployment checks into agent-drafted repair proposals. You supply a shell
+command that reports success or failure. Plumb logs
 the result and, on failure, invokes a guardrailed AI agent in its own clean clone
 to diagnose the problem and open a PR or issue. The deploy checkout and
 production data remain outside the agent's working boundary.
@@ -131,4 +132,8 @@ A pager tells you at 7am that something broke. Plumb's agent has already read
 the logs, bisected the cause, and opened a PR with a failing-case explanation —
 or an issue explaining why it didn't act. You review diffs over coffee instead
 of tailing logs in a bathrobe. The guardrails (own clone, no-main, no-prod-data,
-PR-only) mean the worst case of a wrong diagnosis is a closed PR.
+PR-only) are designed so a wrong diagnosis costs you a closed PR. Today those
+guardrails are prompt-level instructions to the agent; hard enforcement — a
+post-run boundary audit and a sandboxed agent option — is tracked in the
+backlog and should land before you point plumb at anything you cannot afford
+to babysit.
