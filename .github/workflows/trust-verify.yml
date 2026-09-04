@@ -47,7 +47,7 @@ jobs:
       # The external anchor: re-run our real verify fresh + reconcile any delivered bundle.
       # SHA-pinned (mutable tags are not trusted for a cross-repo action that gates merges).
       - id: trust-verify
-        uses: kontourai/flow-agents/.github/actions/trust-verify@d6ee383498d27dfeb81aaf55f6abfccb62f59dc3 # CANARY ONLY: flow-agents pnpm migration (kontourai/flow-agents#1401) -- do not merge
+        uses: kontourai/flow-agents/.github/actions/trust-verify@51dc803d2c42692898add7280043b4d3d0c75faf # CANARY ONLY: flow-agents pnpm migration (kontourai/flow-agents#1401) -- do not merge
         with:
           verify-command: "npm run verify"
   trust-advisory-comment:
