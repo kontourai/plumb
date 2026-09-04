@@ -27,11 +27,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # Reads the exact pnpm version from package.json's packageManager field.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install and verify
-        run: npm ci && npm run verify
+        run: pnpm install --frozen-lockfile && npm run verify
