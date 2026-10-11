@@ -10,7 +10,7 @@ the result and, on failure, invokes a guardrailed AI agent in its own clean clon
 to diagnose the problem and open a PR or issue. The deploy checkout and
 production data remain outside the agent's working boundary.
 
-Born inside [OpenTherapist](https://github.com/briananderson1222/opentherapist),
+Born inside a private application,
 where its first live firing found two real deployment bugs.
 
 ## Install and run
