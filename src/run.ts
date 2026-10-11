@@ -30,6 +30,19 @@ export function run(config: PlumbConfig, options: RunOptions = {}): number {
   if (options.context !== undefined && context === undefined) {
     process.stderr.write(`plumb: ignoring malformed context ${JSON.stringify(options.context)}\n`);
   }
+  // A valid context derives runContext, and a deploy context also derives
+  // deployContext and guardSignature. Refuse a caller value for the same field
+  // rather than silently picking one; fields run does not derive pass through.
+  const derivedFields = context === undefined
+    ? []
+    : context.key === "deploy"
+      ? (["deployContext", "guardSignature", "runContext"] as const)
+      : (["runContext"] as const);
+  for (const field of derivedFields) {
+    if (options.escalateOptions?.[field] !== undefined) {
+      throw new Error(`escalateOptions.${field} conflicts with context ${JSON.stringify(options.context)}; pass one or the other`);
+    }
+  }
   const stateDirectory = config.PLUMB_STATE_DIR ?? path.join(path.dirname(config.LOG_FILE), "state");
   let previousDeploySha: string | undefined;
   if (context?.key === "deploy") {
@@ -64,15 +77,13 @@ export function run(config: PlumbConfig, options: RunOptions = {}): number {
   }
   if (status !== 0) {
     try {
-      const deployContext = context?.key === "deploy"
-        ? { sha: context.value, previousSha: previousDeploySha }
-        : undefined;
-      escalate("checks", config.LOG_FILE, config, {
-        ...options.escalateOptions,
-        deployContext,
-        guardSignature: deployContext ? `deploy:${deployContext.sha}` : options.escalateOptions?.guardSignature,
-        runContext: context ? `${context.key}=${context.value}` : options.escalateOptions?.runContext,
-      });
+      const escalateOptions: EscalateOptions = { ...options.escalateOptions };
+      if (context?.key === "deploy") {
+        escalateOptions.deployContext = { sha: context.value, previousSha: previousDeploySha };
+        escalateOptions.guardSignature = `deploy:${context.value}`;
+      }
+      if (context) escalateOptions.runContext = `${context.key}=${context.value}`;
+      escalate("checks", config.LOG_FILE, config, escalateOptions);
     } catch {
       // Escalation is a best-effort side effect; the run command always exits 0.
     }
