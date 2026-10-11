@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "product": "plumb",
+  "title": "Plumb",
+  "tagline": "Turns failed deployment checks into agent-drafted repair proposals.",
+  "repo": "kontourai/plumb",
+  "landing": "README.md",
+  "documents": [
+    { "source": "docs/getting-started.md", "section": "Start Here" },
+    { "source": "docs/concepts.md", "section": "Concepts" },
+    { "source": "examples/README.md", "section": "Guides" },
+    {
+      "source": "docs/reference.md",
+      "section": "Reference",
+      "covers": ["src/cli.ts", "src/config.ts", "src/index.ts"]
+    },
+    { "source": "CHANGELOG.md", "section": "Reference" },
+    { "source": "AGENTS.md", "section": "Contribute" }
+  ],
+  "topics": [
+    { "id": "quickstart", "title": "Install, configure, and run plumb", "source": "docs/getting-started.md" },
+    { "id": "scheduling", "title": "Scheduling plumb run with cron or systemd", "source": "docs/getting-started.md#schedule-it" },
+    { "id": "checks-command", "title": "The checks command (CHECKS_CMD)", "source": "docs/concepts.md#checks-command" },
+    { "id": "check-runner", "title": "How plumb run works", "source": "docs/concepts.md#check-runner" },
+    { "id": "escalation", "title": "How an escalation runs", "source": "docs/concepts.md#escalation" },
+    { "id": "escalation-guards", "title": "Escalation guards: lock, cooldown, daily cap", "source": "docs/concepts.md#escalation-guards" },
+    { "id": "agent-workspace", "title": "The agent's clean clone", "source": "docs/concepts.md#agent-workspace" },
+    { "id": "agent-guardrails", "title": "Agent prompt and guardrails", "source": "docs/concepts.md#agent-prompt-and-guardrails" },
+    { "id": "deploy-context", "title": "Run context and deploy provenance", "source": "docs/concepts.md#run-context-and-deploy-provenance" },
+    { "id": "cli", "title": "CLI reference: plumb run and plumb escalate", "source": "docs/reference.md#cli" },
+    { "id": "configuration", "title": "Configuration file and keys", "source": "docs/reference.md#configuration" },
+    { "id": "state-files", "title": "Logs and state files plumb writes", "source": "docs/reference.md#files-written" },
+    { "id": "programmatic-api", "title": "Programmatic API: loadConfig, run, escalate", "source": "docs/reference.md#programmatic-api" },
+    { "id": "troubleshooting", "title": "Troubleshooting", "source": "docs/reference.md#troubleshooting" }
+  ],
+  "exclude": []
+}

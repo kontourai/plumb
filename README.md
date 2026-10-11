@@ -30,8 +30,12 @@ plumb escalate database-refresh /var/log/my-app/database-refresh.log
 Once config loads, `plumb run` always exits zero. A failed `CHECKS_CMD`
 triggers escalation as a side effect; suppression guards or agent outcomes do
 not turn the scheduled check runner into a failing job. `plumb run` does exit
-non-zero if config loading itself fails (missing `PLUMB_CONFIG` or a missing
-required key) — that is a setup error, not a checks result.
+non-zero if config loading itself fails (for example, a required key is unset
+or empty) or `LOG_FILE` cannot be written — that is a setup error, not a
+checks result. If `PLUMB_CONFIG` is
+unset, plumb falls back to `plumb.config` at the installed package's root,
+which normally does not exist; keys already set in the environment still
+count. Set `PLUMB_CONFIG` rather than relying on that fallback.
 
 At the end of a deployment, attach the deployed commit:
 
