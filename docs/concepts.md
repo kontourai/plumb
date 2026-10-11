@@ -44,7 +44,8 @@ checks, which set the failing exit code, from soft checks, which only print a
 4. If the command exited non-zero, escalates under the context name `checks`,
    using `LOG_FILE` as the evidence.
 
-Once the config has loaded and `LOG_FILE` is open, `plumb run` returns zero.
+Once the config has loaded and the header is written to `LOG_FILE`,
+`plumb run` returns zero.
 Suppressed escalations, agent failures, and escalation errors are all side
 effects; none of them makes the run fail. This keeps the scheduler's view of
 the job separate from the health of the deployment.
@@ -81,7 +82,8 @@ Only one escalation per context name runs at a time. The lock is a file,
 the escalation finishes. A second escalation for the same context while the
 lock is held is suppressed as `already running`. Because a hard-killed process
 cannot remove its lock, a lock older than the cooldown is treated as stale and
-reclaimed.
+reclaimed. With a cooldown of `0`, any existing lock counts as stale, so the
+lock no longer prevents concurrent escalations.
 
 ### Cooldown
 
@@ -97,7 +99,8 @@ across all contexts. The count lives in `count-YYYYMMDD`, keyed by the
 machine's local date, and counter files older than three days are deleted.
 
 In file names, every character of the context that is not a letter or digit
-becomes `_`.
+becomes `_`. Context names that differ only in those characters, such as
+`db-refresh` and `db_refresh`, therefore share a lock and a cooldown.
 
 ## Agent workspace
 
@@ -108,8 +111,9 @@ plumb prepares `AGENT_WORKDIR`:
 - It runs `git fetch origin`, and if that succeeds,
   `git reset --hard origin/main`.
 
-So the agent always starts from the repository's `main` branch, with any
-leftovers from a previous escalation discarded. Plumb removes inherited
+When the fetch succeeds, the agent starts from the repository's current
+`main`, with any leftovers from a previous escalation discarded. When the fetch
+fails, plumb skips the reset and the agent runs in the clone as it was left. Plumb removes inherited
 `GIT_DIR`, `GIT_WORK_TREE`, `GIT_INDEX_FILE`, `GIT_PREFIX`, and
 `GIT_COMMON_DIR` from the environment of these git commands, so running plumb
 from inside a git hook does not redirect them.
@@ -170,7 +174,8 @@ directory and writes the new one. If the checks then fail:
 
 ## State and logs
 
-Plumb keeps everything beside `LOG_FILE` unless you move it:
+Apart from the agent's clone in `AGENT_WORKDIR`, plumb keeps its files beside
+`LOG_FILE` unless you move them:
 
 - `LOG_FILE` gets every run's header and checks output.
 - The escalations log, whose name is `LOG_FILE` with a trailing `.log`

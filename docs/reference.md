@@ -27,8 +27,9 @@ provenance (see
 [Run context and deploy provenance](concepts.md#run-context-and-deploy-provenance)).
 A malformed context is ignored with a warning.
 
-Exits 0 once the config has loaded and `LOG_FILE` is open, whatever the
-checks, guards, or agent do.
+Exits 0 once the config has loaded and the header line is written to
+`LOG_FILE`, whatever the checks, guards, or agent do. Failing to create, open,
+or write `LOG_FILE` exits 1.
 
 ### plumb escalate
 
@@ -83,10 +84,15 @@ environment counts as configured even when the file does not set it.
 | `PLUMB_ESCALATE_DAILY_CAP` | no | `8` | Escalations allowed per local day, across all contexts. |
 
 A required key that is unset or empty fails with
-`Missing required config key: <KEY>`. The two guard settings must be
-non-negative integers, or escalation fails with
-`<KEY> must be a non-negative integer`. A daily cap of `0` suppresses every
-escalation; a cooldown of `0` disables the cooldown.
+`Missing required config key: <KEY>`. The two guard settings are converted
+with JavaScript's `Number()`, and escalation fails with
+`<KEY> must be a non-negative integer` when the result is not a non-negative
+whole number. `Number()` accepts more than plain digits: surrounding spaces,
+`1e3`, and `0x10` are accepted, and an empty value becomes `0`. So a guard key
+that is set but empty, such as `PLUMB_ESCALATE_DAILY_CAP=""`, silently means
+`0`. A daily cap of `0` suppresses every escalation. A cooldown of `0` disables
+the cooldown and also lets any existing lock be reclaimed as stale, which in
+practice removes the per-context lock.
 
 ## Files written
 
@@ -101,7 +107,8 @@ escalation; a cooldown of `0` disables the cooldown.
 | `AGENT_WORKDIR` | escalations | The agent's clone of `REPO_URL`. |
 
 `<state>` is `PLUMB_STATE_DIR` or `state` beside `LOG_FILE`. In file names,
-every non-alphanumeric character of the context becomes `_`. Plumb creates the
+every non-alphanumeric character of the context becomes `_`, so `a-b` and
+`a_b` share the same files. Plumb creates the
 directories it needs.
 
 ## Programmatic API
@@ -138,7 +145,11 @@ run(config: PlumbConfig, options?: RunOptions): number
 
 The function behind `plumb run`. `RunOptions` has `context?: string` (the
 `key=value` string) and `escalateOptions?: EscalateOptions`, passed through to
-the escalation. Returns 0. It throws if `LOG_FILE` cannot be created, opened, or written;
+the escalation with three overrides. `run` always sets `deployContext` from
+its own `context` (to `undefined` unless it is a valid `deploy` context), so a
+`deployContext` in `escalateOptions` is ignored. When a valid `context` is
+given, it also replaces `runContext` with that `key=value`, and a `deploy`
+context replaces `guardSignature` with `deploy:<sha>`. Returns 0. It throws if `LOG_FILE` cannot be created, opened, or written;
 escalation errors are swallowed.
 
 ### escalate
@@ -177,5 +188,6 @@ command.
 | Usage text and exit 1 | The arguments did not match a form above, such as `--context=deploy=...` or `plumb escalate` with one argument. |
 | A check failed but no agent ran | Look for a `SUPPRESS` line in the escalations log: the lock, cooldown, or daily cap stopped it. |
 | `plumb: Agent command exited with status <N>` | From `plumb escalate`: the agent ran and failed. Its output is in the escalations log. |
-| `plumb: PLUMB_ESCALATE_DAILY_CAP must be a non-negative integer` | A guard setting is not a whole number. `plumb run` ignores this error and does not escalate. |
+| `plumb: PLUMB_ESCALATE_DAILY_CAP must be a non-negative integer` | A guard setting is not a non-negative whole number, for example `abc` or `-1`. `plumb run` ignores this error and does not escalate. |
+| Every escalation is suppressed with `daily cap 0 reached` | `PLUMB_ESCALATE_DAILY_CAP` is set to `0` or to an empty value, which plumb reads as `0`. |
 | The agent did not see the latest commits | `git fetch origin` failed in `AGENT_WORKDIR`, so plumb skipped the reset. The fetch error is printed on plumb's stderr. |

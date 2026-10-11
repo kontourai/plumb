@@ -64,8 +64,9 @@ LOG_FILE="$HOME/.local/state/plumb/checks.log"
 ```
 
 `AGENT_WORKDIR` must be a directory reserved for the agent. Plumb clones
-`REPO_URL` there and runs `git reset --hard origin/main` in it before every
-escalation, so never point it at the deployment checkout.
+`REPO_URL` there, and before each escalation that passes the guards it fetches
+`origin` and, if the fetch succeeds, runs `git reset --hard origin/main`. Never
+point it at the deployment checkout.
 
 The file is bash: plumb loads it by sourcing it, so comments, quoting, and
 `$HOME` expansion work as they do in a shell script. Point `PLUMB_CONFIG` at it:
@@ -111,8 +112,10 @@ At the end of a deployment, pass the deployed commit:
 plumb run --context deploy="$DEPLOY_SHA"
 ```
 
-If that run fails, the agent is told which commit just landed, and the git
-range and diffstat since the previous deploy plumb recorded. See
+If that run fails, the agent is told which commit just landed. When plumb has
+recorded a different earlier deploy SHA and both commits exist in the agent's
+clone, it also gets the git range and diffstat between them. The first deploy
+run has no earlier SHA, so it gets neither. See
 [Run context and deploy provenance](concepts.md#run-context-and-deploy-provenance).
 
 ## Escalate from your own jobs
