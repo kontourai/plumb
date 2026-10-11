@@ -88,7 +88,9 @@ machine. A lock whose process is still running is never reclaimed, so the lock
 stays exclusive even with a cooldown of `0` or an agent that runs longer than
 the cooldown. If the recorded process ID has since been reused by an unrelated
 process, the lock is held until that process exits; delete the lock file to
-clear it sooner.
+clear it sooner. A lock holder in another PID namespace, such as a
+different container sharing the state directory, looks dead, so its lock falls
+back to the age check alone.
 
 ### Cooldown
 
