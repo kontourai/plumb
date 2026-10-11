@@ -99,15 +99,18 @@ holds while its escalation runs.
 | `LOG_FILE` | `plumb run` | `=== <timestamp> plumb checks[ context=<key>=<value>]` headers and checks output. |
 | `LOG_FILE` with `.log` replaced by `-escalations.log` | escalations | Agent output and `<timestamp> SUPPRESS <context> (<reason>)` lines. |
 | `<state>/lock-<context>` | escalations | Held while an escalation for the context runs. |
-| `<state>/last-<context>[_deploy_<sha>]` | escalations | Unix time of the last escalation, for the cooldown. |
+| `<state>/last-<context>[_3adeploy_3a<sha>]` | escalations | Unix time of the last escalation, for the cooldown. |
 | `<state>/count-YYYYMMDD` | escalations | Number of escalations that day; deleted after three days. |
 | `<state>/deploy-sha` | `plumb run --context deploy=<sha>` | The latest deploy SHA. |
 | `AGENT_WORKDIR` | escalations | The agent's clone of `REPO_URL`. |
 
 `<state>` is `PLUMB_STATE_DIR` or `state` beside `LOG_FILE`. In file names,
-every non-alphanumeric character of the context becomes `_`, so `a-b` and
-`a_b` share the same files. Plumb creates the
-directories it needs.
+lowercase letters and digits of the context are kept and every other byte,
+including `_` and uppercase letters, becomes `_` plus two lowercase hex digits:
+`db-refresh` is `db_2drefresh` and `Checks` is `_43hecks`. An encoded name
+longer than 100 characters, including any deploy signature, keeps its first 70
+characters followed by `-` and a 24-character SHA-256 prefix of the full name.
+Distinct context names therefore never share files. Plumb creates the directories it needs.
 
 ## Programmatic API
 

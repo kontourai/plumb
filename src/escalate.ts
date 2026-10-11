@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   appendFileSync,
   closeSync,
@@ -248,6 +249,30 @@ function realRunAgent({ config, prompt, escalationLog }: RunAgentInput): void {
   }
 }
 
+// Collision-free state file name for a context. Lowercase letters and digits are
+// kept, so a plain name such as "checks" keeps its file names; every other UTF-8
+// byte, including "_" and uppercase letters, becomes "_" plus two lowercase hex
+// digits. Each "_" starts an escape, so distinct names never share a file, even
+// on case-insensitive file systems.
+//
+// Escaping can triple a name's length, so an encoding longer than
+// maxEncodedLength keeps a prefix and appends "-" plus a SHA-256 of the whole
+// name. "-" never appears in an untruncated encoding, so the two forms cannot
+// collide, and the result stays well under the 255-byte file-name limit.
+const maxEncodedLength = 100;
+const truncatedPrefixLength = 70;
+
+function contextFileName(context: string): string {
+  let encoded = "";
+  for (const byte of Buffer.from(context, "utf8")) {
+    const isKept = (byte >= 0x61 && byte <= 0x7a) || (byte >= 0x30 && byte <= 0x39);
+    encoded += isKept ? String.fromCharCode(byte) : `_${byte.toString(16).padStart(2, "0")}`;
+  }
+  if (encoded.length <= maxEncodedLength) return encoded;
+  const digest = createHash("sha256").update(context, "utf8").digest("hex").slice(0, 24);
+  return `${encoded.slice(0, truncatedPrefixLength)}-${digest}`;
+}
+
 export function escalate(
   context: string,
   logPath: string,
@@ -264,8 +289,8 @@ export function escalate(
   const now = options.now?.() ?? new Date();
   const nowSeconds = Math.floor(now.getTime() / 1000);
   const guardContext = options.guardSignature ? `${context}:${options.guardSignature}` : context;
-  const baseSlug = context.replace(/[^A-Za-z0-9]/g, "_");
-  const cooldownSlug = guardContext.replace(/[^A-Za-z0-9]/g, "_");
+  const baseSlug = contextFileName(context);
+  const cooldownSlug = contextFileName(guardContext);
   const lockPath = path.join(stateDirectory, `lock-${baseSlug}`);
   const lockToken = `${process.pid}:${now.getTime()}:${Math.random()}`;
 

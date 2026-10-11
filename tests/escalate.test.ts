@@ -178,11 +178,25 @@ test("daily cap binds across different deploy signatures", () => {
   }
 });
 
-test("context slug replaces every non-alphanumeric character", () => {
+test("context file names keep lowercase alphanumerics and escape every other byte", () => {
   const value = fixture();
   try {
-    escalate("db:nightly / west", value.logFile, value.config, value.options);
-    assert.ok(readdirSync(value.stateDirectory).includes("last-db_nightly___west"));
+    escalate("db:nightly / West_1", value.logFile, value.config, value.options);
+    assert.ok(readdirSync(value.stateDirectory).includes("last-db_3anightly_20_2f_20_57est_5f1"));
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
+test("a deploy signature on a long context keeps a bounded, distinct cooldown file", () => {
+  const value = fixture();
+  try {
+    const context = "a-".repeat(70);
+    const sha = "a".repeat(40);
+    escalate(context, value.logFile, value.config, { ...value.options, guardSignature: `deploy:${sha}` });
+    const stamps = readdirSync(value.stateDirectory).filter((name) => name.startsWith("last-"));
+    assert.equal(stamps.length, 2, "base and signature stamps are distinct");
+    for (const stamp of stamps) assert.ok(stamp.length <= 105, stamp);
   } finally {
     rmSync(value.root, { recursive: true, force: true });
   }
