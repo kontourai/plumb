@@ -145,11 +145,14 @@ run(config: PlumbConfig, options?: RunOptions): number
 
 The function behind `plumb run`. `RunOptions` has `context?: string` (the
 `key=value` string) and `escalateOptions?: EscalateOptions`, passed through to
-the escalation with three overrides. `run` always sets `deployContext` from
-its own `context` (to `undefined` unless it is a valid `deploy` context), so a
-`deployContext` in `escalateOptions` is ignored. When a valid `context` is
-given, it also replaces `runContext` with that `key=value`, and a `deploy`
-context replaces `guardSignature` with `deploy:<sha>`. Returns 0. It throws if `LOG_FILE` cannot be created, opened, or written;
+the escalation. A valid `context` derives `runContext` (`key=value`); a
+`deploy` context also derives `deployContext` (with the previous recorded SHA)
+and `guardSignature` (`deploy:<sha>`). Fields the context does not derive are
+passed through unchanged, so without a context a caller's `deployContext`,
+`guardSignature`, and `runContext` are all honored. Setting a field in
+`escalateOptions` that the context also derives throws
+`escalateOptions.<field> conflicts with context "<context>"; pass one or the other`
+before the checks run. Returns 0. It throws if `LOG_FILE` cannot be created, opened, or written;
 escalation errors are swallowed.
 
 ### escalate

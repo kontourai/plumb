@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -106,6 +106,59 @@ test("non-deploy context is tagged and passed downstream without changing guard 
     assert.match(readFileSync(value.LOG_FILE, "utf8"), /context=release=blue/);
     assert.match(calls[0]!.prompt, /Run context: release=blue/);
     assert.ok(readFileSync(path.join(value.PLUMB_STATE_DIR!, "last-checks"), "utf8"));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("caller escalateOptions reach the escalation when run derives no value for them", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "plumb-run-caller-options-"));
+  try {
+    const calls: RunAgentInput[] = [];
+    const value = config(root, "exit 1");
+    assert.equal(run(value, {
+      escalateOptions: {
+        runAgent: (input) => calls.push(input),
+        deployContext: { sha: "abcdef1", previousSha: "1234567" },
+        guardSignature: "caller-signature",
+      },
+    }), 0);
+    assert.equal(calls.length, 1);
+    assert.match(calls[0]!.prompt, /This failure began immediately after deploy abcdef1/);
+    assert.match(calls[0]!.prompt, /1234567\.\.abcdef1/);
+    assert.ok(readdirSync(value.PLUMB_STATE_DIR!).some((name) => name.startsWith("last-checks_caller")));
+
+    const generic = config(path.join(root, "generic"), "exit 1");
+    assert.equal(run(generic, {
+      context: "release=blue",
+      escalateOptions: { runAgent: (input) => calls.push(input), guardSignature: "kept" },
+    }), 0);
+    assert.equal(calls.length, 2);
+    assert.match(calls[1]!.prompt, /Run context: release=blue/);
+    assert.ok(readdirSync(generic.PLUMB_STATE_DIR!).some((name) => name.startsWith("last-checks_kept")));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("run refuses a caller escalateOptions field that its context also derives", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "plumb-run-conflict-"));
+  try {
+    const calls: RunAgentInput[] = [];
+    const value = config(root, "exit 1");
+    const cases = [
+      { context: "release=blue", field: "runContext", escalateOptions: { runContext: "caller" } },
+      { context: "deploy=1111111", field: "deployContext", escalateOptions: { deployContext: { sha: "2222222" } } },
+      { context: "deploy=1111111", field: "guardSignature", escalateOptions: { guardSignature: "caller" } },
+    ] as const;
+    for (const { context, field, escalateOptions } of cases) {
+      assert.throws(
+        () => run(value, { context, escalateOptions: { ...escalateOptions, runAgent: (input) => calls.push(input) } }),
+        new Error(`escalateOptions.${field} conflicts with context "${context}"; pass one or the other`),
+      );
+    }
+    assert.equal(calls.length, 0);
+    assert.equal(existsSync(value.LOG_FILE), false, "refused before the checks ran");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
