@@ -1,6 +1,6 @@
 # Examples
 
-- `opentherapist-checks.mjs` — the reference pure checker shape: one `OK` or
+- `reference-checks.mjs` — the reference pure checker shape: one `OK` or
   `FAIL` line per check, with a non-zero exit if any check failed.
 - `checks-wrapper.sh` — a `CHECKS_CMD` wrapper combining functional and
   side-effecting hard checks, a soft warning, and a pure checker while
