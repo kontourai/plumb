@@ -109,8 +109,10 @@ stale, which in practice removes the per-context lock.
 `<state>` is `PLUMB_STATE_DIR` or `state` beside `LOG_FILE`. In file names,
 lowercase letters and digits of the context are kept and every other byte,
 including `_` and uppercase letters, becomes `_` plus two lowercase hex digits:
-`db-refresh` is `db_2drefresh` and `Checks` is `_43hecks`. Distinct context
-names therefore never share files. Plumb creates the directories it needs.
+`db-refresh` is `db_2drefresh` and `Checks` is `_43hecks`. An encoded name
+longer than 100 characters, including any deploy signature, keeps its first 70
+characters followed by `-` and a 24-character SHA-256 prefix of the full name.
+Distinct context names therefore never share files. Plumb creates the directories it needs.
 
 ## Programmatic API
 

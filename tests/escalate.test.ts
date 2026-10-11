@@ -188,6 +188,20 @@ test("context file names keep lowercase alphanumerics and escape every other byt
   }
 });
 
+test("a deploy signature on a long context keeps a bounded, distinct cooldown file", () => {
+  const value = fixture();
+  try {
+    const context = "a-".repeat(70);
+    const sha = "a".repeat(40);
+    escalate(context, value.logFile, value.config, { ...value.options, guardSignature: `deploy:${sha}` });
+    const stamps = readdirSync(value.stateDirectory).filter((name) => name.startsWith("last-"));
+    assert.equal(stamps.length, 2, "base and signature stamps are distinct");
+    for (const stamp of stamps) assert.ok(stamp.length <= 105, stamp);
+  } finally {
+    rmSync(value.root, { recursive: true, force: true });
+  }
+});
+
 test("escalation log replaces only a trailing .log suffix", () => {
   const value = fixture();
   try {

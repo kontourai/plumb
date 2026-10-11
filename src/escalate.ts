@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   appendFileSync,
   closeSync,
@@ -227,13 +228,23 @@ function realRunAgent({ config, prompt, escalationLog }: RunAgentInput): void {
 // byte, including "_" and uppercase letters, becomes "_" plus two lowercase hex
 // digits. Each "_" starts an escape, so distinct names never share a file, even
 // on case-insensitive file systems.
+//
+// Escaping can triple a name's length, so an encoding longer than
+// maxEncodedLength keeps a prefix and appends "-" plus a SHA-256 of the whole
+// name. "-" never appears in an untruncated encoding, so the two forms cannot
+// collide, and the result stays well under the 255-byte file-name limit.
+const maxEncodedLength = 100;
+const truncatedPrefixLength = 70;
+
 function contextFileName(context: string): string {
   let encoded = "";
   for (const byte of Buffer.from(context, "utf8")) {
     const isKept = (byte >= 0x61 && byte <= 0x7a) || (byte >= 0x30 && byte <= 0x39);
     encoded += isKept ? String.fromCharCode(byte) : `_${byte.toString(16).padStart(2, "0")}`;
   }
-  return encoded;
+  if (encoded.length <= maxEncodedLength) return encoded;
+  const digest = createHash("sha256").update(context, "utf8").digest("hex").slice(0, 24);
+  return `${encoded.slice(0, truncatedPrefixLength)}-${digest}`;
 }
 
 export function escalate(
