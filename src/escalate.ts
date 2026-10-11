@@ -39,11 +39,33 @@ export interface EscalateOptions {
   runContext?: string;
 }
 
-function positiveInteger(value: string | undefined, fallback: number, name: string): number {
+function nonNegativeInteger(value: string | undefined, fallback: number, name: string): number {
   if (value === undefined) return fallback;
-  const parsed = Number(value);
-  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error(`${name} must be a non-negative integer`);
+  // Plain decimal digits only. Number() would read "" as 0 (an empty daily cap
+  // then suppresses every escalation) and accept " 8 ", "1e3", and "0x10".
+  const parsed = /^[0-9]+$/.test(value) ? Number(value) : Number.NaN;
+  if (!Number.isSafeInteger(parsed)) {
+    throw new Error(`${name} must be a non-negative integer, got ${JSON.stringify(value)}`);
+  }
   return parsed;
+}
+
+function lockHolderIsAlive(lockPath: string): boolean {
+  let token: string;
+  try {
+    token = readFileSync(lockPath, "utf8");
+  } catch {
+    return false;
+  }
+  const match = /^([1-9][0-9]*):/.exec(token);
+  if (!match) return false;
+  try {
+    process.kill(Number(match[1]), 0);
+    return true;
+  } catch (error) {
+    // EPERM means the process exists but belongs to another user.
+    return (error as NodeJS.ErrnoException).code === "EPERM";
+  }
 }
 
 function escalationLogPath(logFile: string): string {
@@ -69,7 +91,11 @@ function acquireLock(lockPath: string, token: string, nowSeconds: number, staleA
       const code = (error as NodeJS.ErrnoException).code;
       if (code !== "EEXIST") throw error;
       // O_EXCL lockfiles do not auto-release after a hard kill like flock does.
-      // Reclaim one older than the cooldown so a killed run cannot wedge forever.
+      // Reclaim one older than the cooldown so a killed run cannot wedge forever,
+      // but never while the process that wrote it is still running: the cooldown
+      // may be 0, and a live holder must keep the lock exclusive however long
+      // it runs. A holder in another PID namespace looks dead and falls back to
+      // the age rule alone.
       let ageSeconds: number;
       try {
         ageSeconds = nowSeconds - statSync(lockPath).mtimeMs / 1000;
@@ -77,7 +103,7 @@ function acquireLock(lockPath: string, token: string, nowSeconds: number, staleA
         if ((statError as NodeJS.ErrnoException).code === "ENOENT") continue;
         throw statError;
       }
-      if (ageSeconds <= staleAfterSeconds) return false;
+      if (ageSeconds <= staleAfterSeconds || lockHolderIsAlive(lockPath)) return false;
       try {
         unlinkSync(lockPath);
       } catch (unlinkError) {
@@ -233,8 +259,8 @@ export function escalate(
   mkdirSync(path.dirname(escalationLog), { recursive: true });
   const stateDirectory = config.PLUMB_STATE_DIR ?? path.join(path.dirname(config.LOG_FILE), "state");
   mkdirSync(stateDirectory, { recursive: true });
-  const cooldownSeconds = positiveInteger(config.PLUMB_ESCALATE_COOLDOWN_SECS, 21_600, "PLUMB_ESCALATE_COOLDOWN_SECS");
-  const dailyCap = positiveInteger(config.PLUMB_ESCALATE_DAILY_CAP, 8, "PLUMB_ESCALATE_DAILY_CAP");
+  const cooldownSeconds = nonNegativeInteger(config.PLUMB_ESCALATE_COOLDOWN_SECS, 21_600, "PLUMB_ESCALATE_COOLDOWN_SECS");
+  const dailyCap = nonNegativeInteger(config.PLUMB_ESCALATE_DAILY_CAP, 8, "PLUMB_ESCALATE_DAILY_CAP");
   const now = options.now?.() ?? new Date();
   const nowSeconds = Math.floor(now.getTime() / 1000);
   const guardContext = options.guardSignature ? `${context}:${options.guardSignature}` : context;
