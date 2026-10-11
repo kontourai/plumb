@@ -111,6 +111,12 @@ test("non-deploy context is tagged and passed downstream without changing guard 
   }
 });
 
+// Cooldown stamps other than the plain context's own exist only for a guard
+// signature; counting them avoids depending on the file-name encoding.
+function signatureStamps(stateDirectory: string): number {
+  return readdirSync(stateDirectory).filter((name) => name.startsWith("last-checks") && name !== "last-checks").length;
+}
+
 test("caller escalateOptions reach the escalation when run derives no value for them", () => {
   const root = mkdtempSync(path.join(os.tmpdir(), "plumb-run-caller-options-"));
   try {
@@ -126,7 +132,7 @@ test("caller escalateOptions reach the escalation when run derives no value for 
     assert.equal(calls.length, 1);
     assert.match(calls[0]!.prompt, /This failure began immediately after deploy abcdef1/);
     assert.match(calls[0]!.prompt, /1234567\.\.abcdef1/);
-    assert.ok(readdirSync(value.PLUMB_STATE_DIR!).some((name) => name.startsWith("last-checks_caller")));
+    assert.equal(signatureStamps(value.PLUMB_STATE_DIR!), 1, "the caller's guardSignature keyed a cooldown stamp");
 
     const generic = config(path.join(root, "generic"), "exit 1");
     assert.equal(run(generic, {
@@ -135,7 +141,7 @@ test("caller escalateOptions reach the escalation when run derives no value for 
     }), 0);
     assert.equal(calls.length, 2);
     assert.match(calls[1]!.prompt, /Run context: release=blue/);
-    assert.ok(readdirSync(generic.PLUMB_STATE_DIR!).some((name) => name.startsWith("last-checks_kept")));
+    assert.equal(signatureStamps(generic.PLUMB_STATE_DIR!), 1, "the caller's guardSignature keyed a cooldown stamp");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
