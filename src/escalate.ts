@@ -46,20 +46,6 @@ function positiveInteger(value: string | undefined, fallback: number, name: stri
   return parsed;
 }
 
-// Collision-free state file name for a context. Lowercase letters and digits are
-// kept, so a plain name such as "checks" keeps its file names; every other UTF-8
-// byte, including "_" and uppercase letters, becomes "_" plus two lowercase hex
-// digits. Each "_" starts an escape, so distinct names never share a file, even
-// on case-insensitive file systems.
-function contextFileName(context: string): string {
-  let encoded = "";
-  for (const byte of Buffer.from(context, "utf8")) {
-    const isKept = (byte >= 0x61 && byte <= 0x7a) || (byte >= 0x30 && byte <= 0x39);
-    encoded += isKept ? String.fromCharCode(byte) : `_${byte.toString(16).padStart(2, "0")}`;
-  }
-  return encoded;
-}
-
 function escalationLogPath(logFile: string): string {
   return `${logFile.replace(/\.log$/, "")}-escalations.log`;
 }
@@ -234,6 +220,20 @@ function realRunAgent({ config, prompt, escalationLog }: RunAgentInput): void {
   } finally {
     closeSync(descriptor);
   }
+}
+
+// Collision-free state file name for a context. Lowercase letters and digits are
+// kept, so a plain name such as "checks" keeps its file names; every other UTF-8
+// byte, including "_" and uppercase letters, becomes "_" plus two lowercase hex
+// digits. Each "_" starts an escape, so distinct names never share a file, even
+// on case-insensitive file systems.
+function contextFileName(context: string): string {
+  let encoded = "";
+  for (const byte of Buffer.from(context, "utf8")) {
+    const isKept = (byte >= 0x61 && byte <= 0x7a) || (byte >= 0x30 && byte <= 0x39);
+    encoded += isKept ? String.fromCharCode(byte) : `_${byte.toString(16).padStart(2, "0")}`;
+  }
+  return encoded;
 }
 
 export function escalate(
