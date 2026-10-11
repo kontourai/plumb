@@ -1,0 +1,3711 @@
+{
+  "schemaVersion": 1,
+  "kind": "surface-console-read-model",
+  "contract": "surface.analytics-compatible",
+  "generatedAt": "2026-10-11T20:08:55.809Z",
+  "source": "veritas:veritas-1791749335809",
+  "producer": {
+    "name": "veritas",
+    "runId": "veritas-1791749335809",
+    "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+    "sourceKind": "working-tree",
+    "sourceScope": [
+      "staged",
+      "unstaged",
+      "untracked"
+    ],
+    "evidenceArtifactPath": ".kontourai/veritas/evidence/veritas-1791749335809.json",
+    "claimInputPaths": [
+      ".kontourai/veritas/claims/plumb.surface.governance.guidance.input.json",
+      ".kontourai/veritas/claims/plumb.surface.governance.root-manifests.input.json",
+      ".kontourai/veritas/claims/plumb.surface.delivery.workflows.input.json",
+      ".kontourai/veritas/claims/plumb.surface.app.src.input.json",
+      ".kontourai/veritas/claims/plumb.surface.verification.tests.input.json",
+      ".kontourai/veritas/claims/plumb.governance.input.json",
+      ".kontourai/veritas/claims/plumb.evidence-check.npm-run-verify.input.json",
+      ".kontourai/veritas/claims/veritas.policy.plumb.plumb-default.policy-changes-require-attestation.input.json",
+      ".kontourai/veritas/claims/veritas.policy.plumb.plumb-default.required-veritas-artifacts.input.json",
+      ".kontourai/veritas/claims/veritas.policy.plumb.plumb-default.ai-instruction-files-synced.input.json",
+      ".kontourai/veritas/claims/veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery.input.json",
+      ".kontourai/veritas/claims/veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.input.json"
+    ]
+  },
+  "summary": {
+    "claimCount": 12,
+    "evidenceCount": 11,
+    "policyCount": 5,
+    "eventCount": 10,
+    "transparencyGapCount": 10,
+    "statusCounts": {
+      "unknown": 2,
+      "verified": 7,
+      "disputed": 1,
+      "rejected": 2
+    },
+    "claimTypeCounts": {
+      "veritas-affected-surface": 5,
+      "veritas-governance-artifact": 1,
+      "software-evidence-check": 1,
+      "veritas-policy-result": 4,
+      "software-readiness-verdict": 1
+    },
+    "facetCounts": {
+      "veritas.affected-surface": 5,
+      "veritas.governance": 1,
+      "veritas.evidence-check": 1,
+      "veritas.policy-results": 4,
+      "veritas.readiness": 1
+    },
+    "domainCounts": {
+      "veritas": 12
+    },
+    "policyCounts": {
+      "veritas.surface": 5,
+      "veritas.governance-artifact": 1,
+      "veritas.evidence-check": 1,
+      "veritas.policy-result": 4,
+      "veritas.readiness-verdict": 1
+    },
+    "evidenceTypeCounts": {
+      "policy_rule": 9,
+      "test_output": 1,
+      "attestation": 1
+    },
+    "evidenceMethodCounts": {
+      "auditability": 4,
+      "validation": 6,
+      "attestation": 1
+    },
+    "reviewerAuthorityCounts": {
+      "unknown": 12
+    },
+    "impactLevelCounts": {
+      "medium": 5,
+      "high": 6,
+      "low": 1
+    },
+    "transparencyGapTypeCounts": {
+      "provenance_gap": 2,
+      "policy_violation": 8
+    },
+    "attentionClaimIds": [
+      "plumb.surface.governance.guidance",
+      "plumb.surface.delivery.workflows",
+      "plumb.governance",
+      "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+      "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8"
+    ]
+  },
+  "analytics": {
+    "reportId": "veritas.veritas-1791749335809.surface-report",
+    "generatedAt": "2026-10-11T20:08:55.809Z",
+    "source": "veritas:veritas-1791749335809",
+    "totals": {
+      "claims": 12,
+      "evidence": 11,
+      "policies": 5,
+      "events": 10,
+      "transparencyGaps": 10
+    },
+    "coverageByFacet": [
+      {
+        "facet": "veritas.affected-surface",
+        "totalClaims": 5,
+        "verifiedClaims": 3,
+        "staleClaims": 0,
+        "disputedClaims": 0,
+        "unsupportedClaims": 2,
+        "verificationCoverage": 0.6
+      },
+      {
+        "facet": "veritas.evidence-check",
+        "totalClaims": 1,
+        "verifiedClaims": 1,
+        "staleClaims": 0,
+        "disputedClaims": 0,
+        "unsupportedClaims": 0,
+        "verificationCoverage": 1
+      },
+      {
+        "facet": "veritas.governance",
+        "totalClaims": 1,
+        "verifiedClaims": 0,
+        "staleClaims": 0,
+        "disputedClaims": 1,
+        "unsupportedClaims": 0,
+        "verificationCoverage": 0
+      },
+      {
+        "facet": "veritas.policy-results",
+        "totalClaims": 4,
+        "verifiedClaims": 3,
+        "staleClaims": 0,
+        "disputedClaims": 0,
+        "unsupportedClaims": 0,
+        "verificationCoverage": 0.75
+      },
+      {
+        "facet": "veritas.readiness",
+        "totalClaims": 1,
+        "verifiedClaims": 0,
+        "staleClaims": 0,
+        "disputedClaims": 0,
+        "unsupportedClaims": 0,
+        "verificationCoverage": 0
+      }
+    ],
+    "staleClaims": [],
+    "disputedClaims": [
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "status": "disputed",
+        "impactLevel": "high",
+        "claimType": "veritas-governance-artifact",
+        "subject": {
+          "subjectType": "repository",
+          "subjectId": "plumb"
+        },
+        "policyId": "veritas.governance-artifact"
+      }
+    ],
+    "highImpactUnsupportedClaims": [],
+    "transparencyGaps": {
+      "byType": {
+        "contradiction": 0,
+        "provenance_gap": 2,
+        "policy_violation": 8,
+        "freshness_breach": 0,
+        "corroboration_absent": 0,
+        "unsupported_inference": 0
+      },
+      "bySeverity": {
+        "low": 0,
+        "medium": 4,
+        "high": 6,
+        "critical": 0
+      },
+      "items": [
+        {
+          "transparencyGapId": "plumb.surface.governance.guidance.gap.provenance-gap",
+          "claimId": "plumb.surface.governance.guidance",
+          "type": "provenance_gap",
+          "severity": "medium",
+          "message": "Missing required evidence: policy_rule.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "transparencyGapId": "plumb.surface.governance.guidance.gap.policy-violation",
+          "claimId": "plumb.surface.governance.guidance",
+          "type": "policy_violation",
+          "severity": "medium",
+          "message": "Missing required verification method: auditability.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "transparencyGapId": "plumb.surface.delivery.workflows.gap.provenance-gap",
+          "claimId": "plumb.surface.delivery.workflows",
+          "type": "provenance_gap",
+          "severity": "medium",
+          "message": "Missing required evidence: policy_rule.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "transparencyGapId": "plumb.surface.delivery.workflows.gap.policy-violation",
+          "claimId": "plumb.surface.delivery.workflows",
+          "type": "policy_violation",
+          "severity": "medium",
+          "message": "Missing required verification method: auditability.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "transparencyGapId": "plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+          "claimId": "plumb.governance",
+          "type": "policy_violation",
+          "severity": "high",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+          ],
+          "policyId": "veritas.governance-artifact"
+        },
+        {
+          "transparencyGapId": "plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.audit.evidence",
+          "claimId": "plumb.governance",
+          "type": "policy_violation",
+          "severity": "high",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+          ],
+          "policyId": "veritas.governance-artifact"
+        },
+        {
+          "transparencyGapId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.evidence-veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+          "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+          "type": "policy_violation",
+          "severity": "high",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+          ],
+          "policyId": "veritas.policy-result"
+        },
+        {
+          "transparencyGapId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.hint-1",
+          "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+          "type": "policy_violation",
+          "severity": "high",
+          "message": "Protected standards changes require a fresh authority-backed attestation.",
+          "evidenceIds": [
+            "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+          ],
+          "policyId": "veritas.policy-result"
+        },
+        {
+          "transparencyGapId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.evidence-veritas-1791749335809.readiness-verdict.evidence",
+          "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "type": "policy_violation",
+          "severity": "high",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.readiness-verdict.evidence"
+          ],
+          "policyId": "veritas.readiness-verdict"
+        },
+        {
+          "transparencyGapId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.hint-1",
+          "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "type": "policy_violation",
+          "severity": "high",
+          "message": "Blocking readiness requirement failed: policy-changes-require-attestation.",
+          "evidenceIds": [
+            "veritas-1791749335809.readiness-verdict.evidence"
+          ],
+          "policyId": "veritas.readiness-verdict"
+        }
+      ]
+    },
+    "evidenceGaps": [
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+        ],
+        "policyId": "veritas.governance-artifact"
+      },
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+        ],
+        "policyId": "veritas.governance-artifact"
+      },
+      {
+        "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "facet": "veritas.policy-results",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+        ],
+        "policyId": "veritas.policy-result"
+      },
+      {
+        "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "facet": "veritas.policy-results",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Protected standards changes require a fresh authority-backed attestation.",
+        "evidenceIds": [
+          "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+        ],
+        "policyId": "veritas.policy-result"
+      },
+      {
+        "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "facet": "veritas.readiness",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.readiness-verdict.evidence"
+        ],
+        "policyId": "veritas.readiness-verdict"
+      },
+      {
+        "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "facet": "veritas.readiness",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Blocking readiness requirement failed: policy-changes-require-attestation.",
+        "evidenceIds": [
+          "veritas-1791749335809.readiness-verdict.evidence"
+        ],
+        "policyId": "veritas.readiness-verdict"
+      },
+      {
+        "claimId": "plumb.surface.delivery.workflows",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "policy_violation",
+        "message": "Missing required verification method: auditability.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      },
+      {
+        "claimId": "plumb.surface.delivery.workflows",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "provenance_gap",
+        "message": "Missing required evidence: policy_rule.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      },
+      {
+        "claimId": "plumb.surface.governance.guidance",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "policy_violation",
+        "message": "Missing required verification method: auditability.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      },
+      {
+        "claimId": "plumb.surface.governance.guidance",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "provenance_gap",
+        "message": "Missing required evidence: policy_rule.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      }
+    ],
+    "evidenceRequirementGaps": [
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "attestation_actor_missing",
+        "message": "Attestation veritas-1791749335809.governance.plumb.governance.attestation.evidence has no actor reference.",
+        "policyId": "veritas.governance-artifact",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+        ]
+      },
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "attestation_authority_unverified",
+        "message": "Attestation veritas-1791749335809.governance.plumb.governance.attestation.evidence has no authority source for veritas plus authority attestation.",
+        "policyId": "veritas.governance-artifact",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+        ]
+      },
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "attestation_identity_unverified",
+        "message": "Attestation veritas-1791749335809.governance.plumb.governance.attestation.evidence has no identity evidenceCheck reference.",
+        "policyId": "veritas.governance-artifact",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+        ]
+      },
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+        ],
+        "policyId": "veritas.governance-artifact"
+      },
+      {
+        "claimId": "plumb.governance",
+        "facet": "veritas.governance",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+        ],
+        "policyId": "veritas.governance-artifact"
+      },
+      {
+        "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "facet": "veritas.policy-results",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+        ],
+        "policyId": "veritas.policy-result"
+      },
+      {
+        "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "facet": "veritas.policy-results",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Protected standards changes require a fresh authority-backed attestation.",
+        "evidenceIds": [
+          "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+        ],
+        "policyId": "veritas.policy-result"
+      },
+      {
+        "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "facet": "veritas.readiness",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Evidence explicitly reported a non-passing result.",
+        "evidenceIds": [
+          "veritas-1791749335809.readiness-verdict.evidence"
+        ],
+        "policyId": "veritas.readiness-verdict"
+      },
+      {
+        "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "facet": "veritas.readiness",
+        "impactLevel": "high",
+        "gapType": "policy_violation",
+        "message": "Blocking readiness requirement failed: policy-changes-require-attestation.",
+        "evidenceIds": [
+          "veritas-1791749335809.readiness-verdict.evidence"
+        ],
+        "policyId": "veritas.readiness-verdict"
+      },
+      {
+        "claimId": "plumb.surface.delivery.workflows",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "policy_violation",
+        "message": "Missing required verification method: auditability.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      },
+      {
+        "claimId": "plumb.surface.delivery.workflows",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "provenance_gap",
+        "message": "Missing required evidence: policy_rule.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      },
+      {
+        "claimId": "plumb.surface.governance.guidance",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "policy_violation",
+        "message": "Missing required verification method: auditability.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      },
+      {
+        "claimId": "plumb.surface.governance.guidance",
+        "facet": "veritas.affected-surface",
+        "impactLevel": "medium",
+        "gapType": "provenance_gap",
+        "message": "Missing required evidence: policy_rule.",
+        "evidenceIds": [],
+        "policyId": "veritas.surface"
+      }
+    ],
+    "confidenceBasis": {
+      "sourceQuality": {},
+      "reviewerAuthority": {},
+      "evidenceStrength": {},
+      "corroboratedClaims": 0,
+      "averageExtractionConfidence": null,
+      "freshnessAtRisk": [],
+      "conflictedClaims": []
+    },
+    "actionQueues": {
+      "reviewNow": [
+        {
+          "claimId": "plumb.governance",
+          "facet": "veritas.governance",
+          "status": "disputed",
+          "impactLevel": "high",
+          "claimType": "veritas-governance-artifact",
+          "subject": {
+            "subjectType": "repository",
+            "subjectId": "plumb"
+          },
+          "policyId": "veritas.governance-artifact"
+        },
+        {
+          "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+          "facet": "veritas.policy-results",
+          "status": "rejected",
+          "impactLevel": "high",
+          "claimType": "veritas-policy-result",
+          "subject": {
+            "subjectType": "policy-rule",
+            "subjectId": "plumb:plumb-default:policy-changes-require-attestation"
+          },
+          "policyId": "veritas.policy-result"
+        },
+        {
+          "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "facet": "veritas.readiness",
+          "status": "rejected",
+          "impactLevel": "high",
+          "claimType": "software-readiness-verdict",
+          "subject": {
+            "subjectType": "repository-change",
+            "subjectId": "plumb-default:working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8"
+          },
+          "policyId": "veritas.readiness-verdict"
+        }
+      ],
+      "reverifyStale": [],
+      "resolveConflicts": [],
+      "strengthenEvidence": [
+        {
+          "claimId": "plumb.governance",
+          "facet": "veritas.governance",
+          "impactLevel": "high",
+          "gapType": "attestation_actor_missing",
+          "message": "Attestation veritas-1791749335809.governance.plumb.governance.attestation.evidence has no actor reference.",
+          "policyId": "veritas.governance-artifact",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+          ]
+        },
+        {
+          "claimId": "plumb.governance",
+          "facet": "veritas.governance",
+          "impactLevel": "high",
+          "gapType": "attestation_authority_unverified",
+          "message": "Attestation veritas-1791749335809.governance.plumb.governance.attestation.evidence has no authority source for veritas plus authority attestation.",
+          "policyId": "veritas.governance-artifact",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+          ]
+        },
+        {
+          "claimId": "plumb.governance",
+          "facet": "veritas.governance",
+          "impactLevel": "high",
+          "gapType": "attestation_identity_unverified",
+          "message": "Attestation veritas-1791749335809.governance.plumb.governance.attestation.evidence has no identity evidenceCheck reference.",
+          "policyId": "veritas.governance-artifact",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+          ]
+        },
+        {
+          "claimId": "plumb.governance",
+          "facet": "veritas.governance",
+          "impactLevel": "high",
+          "gapType": "policy_violation",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+          ],
+          "policyId": "veritas.governance-artifact"
+        },
+        {
+          "claimId": "plumb.governance",
+          "facet": "veritas.governance",
+          "impactLevel": "high",
+          "gapType": "policy_violation",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+          ],
+          "policyId": "veritas.governance-artifact"
+        },
+        {
+          "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+          "facet": "veritas.policy-results",
+          "impactLevel": "high",
+          "gapType": "policy_violation",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+          ],
+          "policyId": "veritas.policy-result"
+        },
+        {
+          "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+          "facet": "veritas.policy-results",
+          "impactLevel": "high",
+          "gapType": "policy_violation",
+          "message": "Protected standards changes require a fresh authority-backed attestation.",
+          "evidenceIds": [
+            "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+          ],
+          "policyId": "veritas.policy-result"
+        },
+        {
+          "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "facet": "veritas.readiness",
+          "impactLevel": "high",
+          "gapType": "policy_violation",
+          "message": "Evidence explicitly reported a non-passing result.",
+          "evidenceIds": [
+            "veritas-1791749335809.readiness-verdict.evidence"
+          ],
+          "policyId": "veritas.readiness-verdict"
+        },
+        {
+          "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "facet": "veritas.readiness",
+          "impactLevel": "high",
+          "gapType": "policy_violation",
+          "message": "Blocking readiness requirement failed: policy-changes-require-attestation.",
+          "evidenceIds": [
+            "veritas-1791749335809.readiness-verdict.evidence"
+          ],
+          "policyId": "veritas.readiness-verdict"
+        },
+        {
+          "claimId": "plumb.surface.delivery.workflows",
+          "facet": "veritas.affected-surface",
+          "impactLevel": "medium",
+          "gapType": "policy_violation",
+          "message": "Missing required verification method: auditability.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "claimId": "plumb.surface.delivery.workflows",
+          "facet": "veritas.affected-surface",
+          "impactLevel": "medium",
+          "gapType": "provenance_gap",
+          "message": "Missing required evidence: policy_rule.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "claimId": "plumb.surface.governance.guidance",
+          "facet": "veritas.affected-surface",
+          "impactLevel": "medium",
+          "gapType": "policy_violation",
+          "message": "Missing required verification method: auditability.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        },
+        {
+          "claimId": "plumb.surface.governance.guidance",
+          "facet": "veritas.affected-surface",
+          "impactLevel": "medium",
+          "gapType": "provenance_gap",
+          "message": "Missing required evidence: policy_rule.",
+          "evidenceIds": [],
+          "policyId": "veritas.surface"
+        }
+      ]
+    },
+    "attestationValidity": {
+      "totalAttestations": 1,
+      "validAttestations": 0,
+      "weakAttestations": 0,
+      "invalidAttestations": 1,
+      "items": [
+        {
+          "evidenceId": "veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+          "claimId": "plumb.governance",
+          "requiredAuthority": "veritas plus authority attestation",
+          "status": "invalid",
+          "gaps": [
+            "attestation_actor_missing",
+            "attestation_identity_unverified",
+            "attestation_authority_unverified"
+          ],
+          "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8"
+        }
+      ]
+    }
+  },
+  "standardsFeedbackSummary": null,
+  "claims": [
+    {
+      "id": "plumb.surface.governance.guidance",
+      "status": "unknown",
+      "subjectType": "repo-surface",
+      "subjectId": "plumb:governance.guidance",
+      "facet": "veritas.affected-surface",
+      "domain": "veritas",
+      "claimType": "veritas-affected-surface",
+      "fieldOrBehavior": "governance.guidance",
+      "value": "governance.guidance",
+      "verificationPolicyId": "veritas.surface",
+      "impactLevel": "medium",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [],
+      "eventIds": [],
+      "transparencyGapIds": [
+        "plumb.surface.governance.guidance.gap.provenance-gap",
+        "plumb.surface.governance.guidance.gap.policy-violation"
+      ],
+      "transparencyGapTypes": [
+        "policy_violation",
+        "provenance_gap"
+      ],
+      "evidenceTypes": [],
+      "evidenceMethods": [],
+      "latestEventStatus": null,
+      "metadata": {
+        "nodeId": "governance.guidance"
+      }
+    },
+    {
+      "id": "plumb.surface.governance.root-manifests",
+      "status": "verified",
+      "subjectType": "repo-surface",
+      "subjectId": "plumb:governance.root-manifests",
+      "facet": "veritas.affected-surface",
+      "domain": "veritas",
+      "claimType": "veritas-affected-surface",
+      "fieldOrBehavior": "governance.root-manifests",
+      "value": "governance.root-manifests",
+      "verificationPolicyId": "veritas.surface",
+      "impactLevel": "medium",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.surface.governance.root-manifests.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.surface.governance.root-manifests.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "auditability"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "nodeId": "governance.root-manifests"
+      }
+    },
+    {
+      "id": "plumb.surface.delivery.workflows",
+      "status": "unknown",
+      "subjectType": "repo-surface",
+      "subjectId": "plumb:delivery.workflows",
+      "facet": "veritas.affected-surface",
+      "domain": "veritas",
+      "claimType": "veritas-affected-surface",
+      "fieldOrBehavior": "delivery.workflows",
+      "value": "delivery.workflows",
+      "verificationPolicyId": "veritas.surface",
+      "impactLevel": "medium",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [],
+      "eventIds": [],
+      "transparencyGapIds": [
+        "plumb.surface.delivery.workflows.gap.provenance-gap",
+        "plumb.surface.delivery.workflows.gap.policy-violation"
+      ],
+      "transparencyGapTypes": [
+        "policy_violation",
+        "provenance_gap"
+      ],
+      "evidenceTypes": [],
+      "evidenceMethods": [],
+      "latestEventStatus": null,
+      "metadata": {
+        "nodeId": "delivery.workflows"
+      }
+    },
+    {
+      "id": "plumb.surface.app.src",
+      "status": "verified",
+      "subjectType": "repo-surface",
+      "subjectId": "plumb:app.src",
+      "facet": "veritas.affected-surface",
+      "domain": "veritas",
+      "claimType": "veritas-affected-surface",
+      "fieldOrBehavior": "app.src",
+      "value": "app.src",
+      "verificationPolicyId": "veritas.surface",
+      "impactLevel": "medium",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.surface.app.src.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.surface.app.src.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "auditability"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "nodeId": "app.src"
+      }
+    },
+    {
+      "id": "plumb.surface.verification.tests",
+      "status": "verified",
+      "subjectType": "repo-surface",
+      "subjectId": "plumb:verification.tests",
+      "facet": "veritas.affected-surface",
+      "domain": "veritas",
+      "claimType": "veritas-affected-surface",
+      "fieldOrBehavior": "verification.tests",
+      "value": "verification.tests",
+      "verificationPolicyId": "veritas.surface",
+      "impactLevel": "medium",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.surface.verification.tests.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.surface.verification.tests.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "auditability"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "nodeId": "verification.tests"
+      }
+    },
+    {
+      "id": "plumb.governance",
+      "status": "disputed",
+      "subjectType": "repository",
+      "subjectId": "plumb",
+      "facet": "veritas.governance",
+      "domain": "veritas",
+      "claimType": "veritas-governance-artifact",
+      "fieldOrBehavior": "governance artifact integrity",
+      "value": "governance artifact integrity",
+      "verificationPolicyId": "veritas.governance-artifact",
+      "impactLevel": "high",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.governance.plumb.governance.disputed"
+      ],
+      "transparencyGapIds": [
+        "plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.audit.evidence"
+      ],
+      "transparencyGapTypes": [
+        "policy_violation"
+      ],
+      "evidenceTypes": [
+        "attestation",
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "attestation",
+        "auditability"
+      ],
+      "latestEventStatus": "disputed",
+      "metadata": {}
+    },
+    {
+      "id": "plumb.evidence-check.npm-run-verify",
+      "status": "verified",
+      "subjectType": "repository",
+      "subjectId": "plumb",
+      "facet": "veritas.evidence-check",
+      "domain": "veritas",
+      "claimType": "software-evidence-check",
+      "fieldOrBehavior": "npm run verify",
+      "value": "all checks pass",
+      "verificationPolicyId": "veritas.evidence-check",
+      "impactLevel": "high",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-07-20T14:45:20.342Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.evidence-check.required-evidence-check.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.evidence-check.required-evidence-check.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "test_output"
+      ],
+      "evidenceMethods": [
+        "validation"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "command": "npm run verify"
+      }
+    },
+    {
+      "id": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+      "status": "rejected",
+      "subjectType": "policy-rule",
+      "subjectId": "plumb:plumb-default:policy-changes-require-attestation",
+      "facet": "veritas.policy-results",
+      "domain": "veritas",
+      "claimType": "veritas-policy-result",
+      "fieldOrBehavior": "policy-changes-require-attestation",
+      "value": "policy-changes-require-attestation",
+      "verificationPolicyId": "veritas.policy-result",
+      "impactLevel": "high",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.policy.policy-changes-require-attestation.rejected"
+      ],
+      "transparencyGapIds": [
+        "veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.evidence-veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+        "veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.hint-1"
+      ],
+      "transparencyGapTypes": [
+        "policy_violation"
+      ],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "validation"
+      ],
+      "latestEventStatus": "rejected",
+      "metadata": {
+        "projected": true,
+        "ruleId": "policy-changes-require-attestation",
+        "enforcementLevel": "Require",
+        "classification": "hard-invariant",
+        "repoStandards": "plumb-default",
+        "repoMap": "plumb"
+      }
+    },
+    {
+      "id": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+      "status": "verified",
+      "subjectType": "policy-rule",
+      "subjectId": "plumb:plumb-default:required-veritas-artifacts",
+      "facet": "veritas.policy-results",
+      "domain": "veritas",
+      "claimType": "veritas-policy-result",
+      "fieldOrBehavior": "required-veritas-artifacts",
+      "value": "required-veritas-artifacts",
+      "verificationPolicyId": "veritas.policy-result",
+      "impactLevel": "high",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.required-veritas-artifacts.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.policy.required-veritas-artifacts.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "validation"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "projected": true,
+        "ruleId": "required-veritas-artifacts",
+        "enforcementLevel": "Require",
+        "classification": "hard-invariant",
+        "repoStandards": "plumb-default",
+        "repoMap": "plumb"
+      }
+    },
+    {
+      "id": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+      "status": "verified",
+      "subjectType": "policy-rule",
+      "subjectId": "plumb:plumb-default:ai-instruction-files-synced",
+      "facet": "veritas.policy-results",
+      "domain": "veritas",
+      "claimType": "veritas-policy-result",
+      "fieldOrBehavior": "ai-instruction-files-synced",
+      "value": "ai-instruction-files-synced",
+      "verificationPolicyId": "veritas.policy-result",
+      "impactLevel": "high",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.ai-instruction-files-synced.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.policy.ai-instruction-files-synced.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "validation"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "projected": true,
+        "ruleId": "ai-instruction-files-synced",
+        "enforcementLevel": "Guide",
+        "classification": "hard-invariant",
+        "repoStandards": "plumb-default",
+        "repoMap": "plumb"
+      }
+    },
+    {
+      "id": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+      "status": "verified",
+      "subjectType": "policy-rule",
+      "subjectId": "plumb:plumb-default:prefer-veritas-routed-delivery",
+      "facet": "veritas.policy-results",
+      "domain": "veritas",
+      "claimType": "veritas-policy-result",
+      "fieldOrBehavior": "prefer-veritas-routed-delivery",
+      "value": "prefer-veritas-routed-delivery",
+      "verificationPolicyId": "veritas.policy-result",
+      "impactLevel": "low",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.prefer-veritas-routed-delivery.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.policy.prefer-veritas-routed-delivery.verified"
+      ],
+      "transparencyGapIds": [],
+      "transparencyGapTypes": [],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "validation"
+      ],
+      "latestEventStatus": "verified",
+      "metadata": {
+        "projected": true,
+        "ruleId": "prefer-veritas-routed-delivery",
+        "enforcementLevel": "Observe",
+        "classification": "promotable-policy",
+        "repoStandards": "plumb-default",
+        "repoMap": "plumb"
+      }
+    },
+    {
+      "id": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "status": "rejected",
+      "subjectType": "repository-change",
+      "subjectId": "plumb-default:working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "facet": "veritas.readiness",
+      "domain": "veritas",
+      "claimType": "software-readiness-verdict",
+      "fieldOrBehavior": "mergeReadiness",
+      "value": {
+        "verdict": "not-ready",
+        "promotionAllowed": true,
+        "uncoveredPathResult": "warn",
+        "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8"
+      },
+      "verificationPolicyId": "veritas.readiness-verdict",
+      "impactLevel": "high",
+      "reviewerAuthority": null,
+      "evidenceStrength": null,
+      "sourceQuality": null,
+      "confidenceBasis": null,
+      "currentIntegrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "derivedFrom": [
+        "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "veritas.policy.plumb.plumb-default.required-veritas-artifacts"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "updatedAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.readiness-verdict.evidence"
+      ],
+      "eventIds": [
+        "veritas-1791749335809.readiness-verdict.rejected"
+      ],
+      "transparencyGapIds": [
+        "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.evidence-veritas-1791749335809.readiness-verdict.evidence",
+        "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.hint-1"
+      ],
+      "transparencyGapTypes": [
+        "policy_violation"
+      ],
+      "evidenceTypes": [
+        "policy_rule"
+      ],
+      "evidenceMethods": [
+        "validation"
+      ],
+      "latestEventStatus": "rejected",
+      "metadata": {
+        "producer": "veritas",
+        "source": "readiness",
+        "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "policyCoverage": {
+          "policyResultCount": 4,
+          "derivedRequirementClaimIds": [
+            "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+            "veritas.policy.plumb.plumb-default.required-veritas-artifacts"
+          ],
+          "selectedEvidenceCheckCount": 1,
+          "readinessCoveragePresent": true
+        },
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "policies": [
+    {
+      "id": "veritas.surface",
+      "claimType": "veritas-affected-surface",
+      "requiredEvidence": [
+        "policy_rule"
+      ],
+      "requiredMethods": [
+        "auditability"
+      ],
+      "reviewAuthority": "veritas",
+      "validityRule": {
+        "kind": "commit"
+      },
+      "impactLevel": "medium",
+      "claimCount": 5,
+      "statusCounts": {
+        "unknown": 2,
+        "verified": 3
+      },
+      "transparencyGapCounts": {
+        "provenance_gap": 2,
+        "policy_violation": 2
+      }
+    },
+    {
+      "id": "veritas.governance-artifact",
+      "claimType": "veritas-governance-artifact",
+      "requiredEvidence": [
+        "attestation",
+        "policy_rule"
+      ],
+      "requiredMethods": [
+        "auditability",
+        "attestation"
+      ],
+      "reviewAuthority": "veritas plus authority attestation",
+      "validityRule": {
+        "kind": "manual"
+      },
+      "impactLevel": "high",
+      "claimCount": 1,
+      "statusCounts": {
+        "disputed": 1
+      },
+      "transparencyGapCounts": {
+        "policy_violation": 2
+      }
+    },
+    {
+      "id": "veritas.evidence-check",
+      "claimType": "software-evidence-check",
+      "requiredEvidence": [
+        "test_output"
+      ],
+      "requiredMethods": [
+        "validation"
+      ],
+      "reviewAuthority": "veritas",
+      "validityRule": {
+        "kind": "commit"
+      },
+      "impactLevel": "high",
+      "claimCount": 1,
+      "statusCounts": {
+        "verified": 1
+      },
+      "transparencyGapCounts": {}
+    },
+    {
+      "id": "veritas.policy-result",
+      "claimType": "veritas-policy-result",
+      "requiredEvidence": [
+        "policy_rule"
+      ],
+      "requiredMethods": [
+        "validation"
+      ],
+      "reviewAuthority": "veritas requirements",
+      "validityRule": {
+        "kind": "commit"
+      },
+      "impactLevel": "high",
+      "claimCount": 4,
+      "statusCounts": {
+        "rejected": 1,
+        "verified": 3
+      },
+      "transparencyGapCounts": {
+        "policy_violation": 2
+      }
+    },
+    {
+      "id": "veritas.readiness-verdict",
+      "claimType": "software-readiness-verdict",
+      "requiredEvidence": [
+        "policy_rule"
+      ],
+      "requiredMethods": [
+        "validation"
+      ],
+      "reviewAuthority": "veritas readiness producer",
+      "validityRule": {
+        "kind": "commit"
+      },
+      "impactLevel": "high",
+      "claimCount": 1,
+      "statusCounts": {
+        "rejected": 1
+      },
+      "transparencyGapCounts": {
+        "policy_violation": 2
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "id": "veritas-1791749335809.surface.app.src.evidence",
+      "claimId": "plumb.surface.app.src",
+      "evidenceType": "policy_rule",
+      "method": "auditability",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "components",
+      "excerptOrSummary": "Veritas marked app.src as an affected work area for Initial Project Setup.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "affectedNode": "app.src"
+      }
+    },
+    {
+      "id": "veritas-1791749335809.surface.governance.root-manifests.evidence",
+      "claimId": "plumb.surface.governance.root-manifests",
+      "evidenceType": "policy_rule",
+      "method": "auditability",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "components",
+      "excerptOrSummary": "Veritas marked governance.root-manifests as an affected work area for Initial Project Setup.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "affectedNode": "governance.root-manifests"
+      }
+    },
+    {
+      "id": "veritas-1791749335809.surface.verification.tests.evidence",
+      "claimId": "plumb.surface.verification.tests",
+      "evidenceType": "policy_rule",
+      "method": "auditability",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "components",
+      "excerptOrSummary": "Veritas marked verification.tests as an affected work area for Initial Project Setup.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "affectedNode": "verification.tests"
+      }
+    },
+    {
+      "id": "veritas-1791749335809.evidence-check.required-evidence-check.evidence",
+      "claimId": "plumb.evidence-check.npm-run-verify",
+      "evidenceType": "test_output",
+      "method": "validation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "selected_evidence_checks",
+      "excerptOrSummary": "All evidence checks passed.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": true,
+      "blocking": true,
+      "execution": {
+        "runner": "bash",
+        "label": "npm run verify",
+        "exitCode": 0,
+        "durationMs": 15388
+      },
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "evidenceCheckLabel": "npm run verify",
+        "command": "npm run verify",
+        "expectedResult": "all checks pass",
+        "observedResult": {
+          "expected": "all checks pass",
+          "status": "passed",
+          "summary": "All evidence checks passed."
+        },
+        "commandOutput": {
+          "command": "npm run verify",
+          "exitCode": 0,
+          "signal": null,
+          "stdout": "\n> @kontourai/plumb@0.1.0 verify\n> npm run typecheck && npm test && npm pack --dry-run\n\n\n> @kontourai/plumb@0.1.0 typecheck\n> tsc --noEmit\n\n\n> @kontourai/plumb@0.1.0 test\n> npm run build && node --test dist/tests/*.test.js\n\n\n> @kontourai/plumb@0.1.0 build\n> rm -rf dist && tsc\n\n✔ run CLI accepts one context flag (145.200958ms)\n✔ loadConfig sources bash syntax, expands HOME, and retains child environment (55.420875ms)\n✔ cooldown suppresses a second escalation inside the configured window (23.556625ms)\n✔ global daily cap suppresses after N distinct contexts (6.074709ms)\n✔ distinct contexts have independent cooldown guards (19.802084ms)\n✔ guard signatures re-arm cooldown without changing the prompt context (6.535709ms)\n✔ deploy signatures share the base context lock (3.062625ms)\n✔ deploy escalation updates the base cooldown stamp for a following plain run (5.508666ms)\n✔ daily cap binds across different deploy signatures (3.343834ms)\n✔ context slug replaces every non-alphanumeric character (2.829583ms)\n✔ escalation log replaces only a trailing .log suffix (101.551375ms)\n✔ agent receives the original guardrail prompt text with interpolated evidence (3.205792ms)\n✔ real escalation computes a deploy diffstat in the clean agent clone (2314.666625ms)\n✔ real escalation ignores inherited Git hook context when computing deploy diffstat (2483.589708ms)\n✔ an active per-context lock suppresses without invoking the agent (3.168875ms)\n✔ a lock older than the cooldown is reclaimed and released (3.071167ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"\" instead of guessing (250.969834ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\" 8 \" instead of guessing (266.205083ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"1e3\" instead of guessing (254.491917ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"0x10\" instead of guessing (225.283625ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"-1\" instead of guessing (285.998917ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"abc\" instead of guessing (235.180542ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"\" instead of guessing (229.762125ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\" 8 \" instead of guessing (333.361ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"1e3\" instead of guessing (256.506ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"0x10\" instead of guessing (198.248209ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"-1\" instead of guessing (182.043ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"abc\" instead of guessing (199.551375ms)\n✔ plumb escalate accepts plain decimal guard settings (819.470542ms)\n✔ with a cooldown of 0, a lock held by a live process still suppresses a second escalation (445.837709ms)\n✔ a lock left by a dead process is reclaimed once older than the cooldown (505.539584ms)\n✔ run always returns zero and escalates only for a non-zero checks command (382.235416ms)\n✔ deploy context tags history, records the deploy, enriches escalation, and re-arms cooldown (171.4265ms)\n✔ malformed deploy context degrades to the existing run behavior (55.570167ms)\n✔ non-deploy context is tagged and passed downstream without changing guard identity (59.830792ms)\nℹ tests 35\nℹ suites 0\nℹ pass 35\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 5092.210541\n\n> @kontourai/plumb@0.1.0 prepare\n> npm run build\n\n\n> @kontourai/plumb@0.1.0 build\n> rm -rf dist && tsc\n\nkontourai-plumb-0.1.0.tgz\n",
+          "stderr": "npm notice\nnpm notice 📦  @kontourai/plumb@0.1.0\nnpm notice Tarball Contents\nnpm notice 8.9kB LICENSE\nnpm notice 6.4kB README.md\nnpm notice 102B bin/plumb.mjs\nnpm notice 66B dist/src/cli.d.ts\nnpm notice 1.1kB dist/src/cli.js\nnpm notice 493B dist/src/config.d.ts\nnpm notice 1.6kB dist/src/config.js\nnpm notice 641B dist/src/escalate.d.ts\nnpm notice 11.6kB dist/src/escalate.js\nnpm notice 235B dist/src/index.d.ts\nnpm notice 117B dist/src/index.js\nnpm notice 275B dist/src/run.d.ts\nnpm notice 3.4kB dist/src/run.js\nnpm notice 959B examples/checks-wrapper.sh\nnpm notice 643B examples/job-with-escalation.sh\nnpm notice 708B examples/README.md\nnpm notice 3.9kB examples/reference-checks.mjs\nnpm notice 1.5kB package.json\nnpm notice 830B plumb.config.example\nnpm notice 343B systemd/plumb-checks.service\nnpm notice 123B systemd/plumb-checks.timer\nnpm notice Tarball Details\nnpm notice name: @kontourai/plumb\nnpm notice version: 0.1.0\nnpm notice filename: kontourai-plumb-0.1.0.tgz\nnpm notice package size: 15.6 kB\nnpm notice unpacked size: 44.0 kB\nnpm notice shasum: 458fa002c1d17f566d8d64e912e11d4e452bae17\nnpm notice integrity: sha512-Q8vbg/C/tscDg[...]7C8AJTi3Kwd6A==\nnpm notice total files: 21\nnpm notice\n",
+          "combined": "\n> @kontourai/plumb@0.1.0 verify\n> npm run typecheck && npm test && npm pack --dry-run\n\n\n> @kontourai/plumb@0.1.0 typecheck\n> tsc --noEmit\n\n\n> @kontourai/plumb@0.1.0 test\n> npm run build && node --test dist/tests/*.test.js\n\n\n> @kontourai/plumb@0.1.0 build\n> rm -rf dist && tsc\n\n✔ run CLI accepts one context flag (145.200958ms)\n✔ loadConfig sources bash syntax, expands HOME, and retains child environment (55.420875ms)\n✔ cooldown suppresses a second escalation inside the configured window (23.556625ms)\n✔ global daily cap suppresses after N distinct contexts (6.074709ms)\n✔ distinct contexts have independent cooldown guards (19.802084ms)\n✔ guard signatures re-arm cooldown without changing the prompt context (6.535709ms)\n✔ deploy signatures share the base context lock (3.062625ms)\n✔ deploy escalation updates the base cooldown stamp for a following plain run (5.508666ms)\n✔ daily cap binds across different deploy signatures (3.343834ms)\n✔ context slug replaces every non-alphanumeric character (2.829583ms)\n✔ escalation log replaces only a trailing .log suffix (101.551375ms)\n✔ agent receives the original guardrail prompt text with interpolated evidence (3.205792ms)\n✔ real escalation computes a deploy diffstat in the clean agent clone (2314.666625ms)\n✔ real escalation ignores inherited Git hook context when computing deploy diffstat (2483.589708ms)\n✔ an active per-context lock suppresses without invoking the agent (3.168875ms)\n✔ a lock older than the cooldown is reclaimed and released (3.071167ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"\" instead of guessing (250.969834ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\" 8 \" instead of guessing (266.205083ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"1e3\" instead of guessing (254.491917ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"0x10\" instead of guessing (225.283625ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"-1\" instead of guessing (285.998917ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_DAILY_CAP=\"abc\" instead of guessing (235.180542ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"\" instead of guessing (229.762125ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\" 8 \" instead of guessing (333.361ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"1e3\" instead of guessing (256.506ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"0x10\" instead of guessing (198.248209ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"-1\" instead of guessing (182.043ms)\n✔ plumb escalate refuses PLUMB_ESCALATE_COOLDOWN_SECS=\"abc\" instead of guessing (199.551375ms)\n✔ plumb escalate accepts plain decimal guard settings (819.470542ms)\n✔ with a cooldown of 0, a lock held by a live process still suppresses a second escalation (445.837709ms)\n✔ a lock left by a dead process is reclaimed once older than the cooldown (505.539584ms)\n✔ run always returns zero and escalates only for a non-zero checks command (382.235416ms)\n✔ deploy context tags history, records the deploy, enriches escalation, and re-arms cooldown (171.4265ms)\n✔ malformed deploy context degrades to the existing run behavior (55.570167ms)\n✔ non-deploy context is tagged and passed downstream without changing guard identity (59.830792ms)\nℹ tests 35\nℹ suites 0\nℹ pass 35\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 5092.210541\n\n> @kontourai/plumb@0.1.0 prepare\n> npm run build\n\n\n> @kontourai/plumb@0.1.0 build\n> rm -rf dist && tsc\n\nkontourai-plumb-0.1.0.tgz\nnpm notice\nnpm notice 📦  @kontourai/plumb@0.1.0\nnpm notice Tarball Contents\nnpm notice 8.9kB LICENSE\nnpm notice 6.4kB README.md\nnpm notice 102B bin/plumb.mjs\nnpm notice 66B dist/src/cli.d.ts\nnpm notice 1.1kB dist/src/cli.js\nnpm notice 493B dist/src/config.d.ts\nnpm notice 1.6kB dist/src/config.js\nnpm notice 641B dist/src/escalate.d.ts\nnpm notice 11.6kB dist/src/escalate.js\nnpm notice 235B dist/src/index.d.ts\nnpm notice 117B dist/src/index.js\nnpm notice 275B dist/src/run.d.ts\nnpm notice 3.4kB dist/src/run.js\nnpm notice 959B examples/checks-wrapper.sh\nnpm notice 643B examples/job-with-escalation.sh\nnpm notice 708B examples/README.md\nnpm notice 3.9kB examples/reference-checks.mjs\nnpm notice 1.5kB package.json\nnpm notice 830B plumb.config.example\nnpm notice 343B systemd/plumb-checks.service\nnpm notice 123B systemd/plumb-checks.timer\nnpm notice Tarball Details\nnpm notice name: @kontourai/plumb\nnpm notice version: 0.1.0\nnpm notice filename: kontourai-plumb-0.1.0.tgz\nnpm notice package size: 15.6 kB\nnpm notice unpacked size: 44.0 kB\nnpm notice shasum: 458fa002c1d17f566d8d64e912e11d4e452bae17\nnpm notice integrity: sha512-Q8vbg/C/tscDg[...]7C8AJTi3Kwd6A==\nnpm notice total files: 21\nnpm notice\n"
+        },
+        "evidenceCheckResolutionSource": "required",
+        "baselineCiFastPassed": true,
+        "evidenceCheckId": "required-evidence-check",
+        "evidenceCheckRunner": "bash",
+        "surfaceClaimIds": []
+      }
+    },
+    {
+      "id": "veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+      "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+      "evidenceType": "policy_rule",
+      "method": "validation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "policy_results.policy-changes-require-attestation",
+      "excerptOrSummary": "Current protected standards hashes do not match the active attestation.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": false,
+      "blocking": true,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "enforcementLevel": "Require",
+        "classification": "hard-invariant",
+        "implemented": true,
+        "passed": false,
+        "transparencyGapHints": [
+          {
+            "type": "policy_violation",
+            "severity": "high",
+            "message": "Protected standards changes require a fresh authority-backed attestation.",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "veritas-1791749335809.policy.required-veritas-artifacts.evidence",
+      "claimId": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+      "evidenceType": "policy_rule",
+      "method": "validation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "policy_results.required-veritas-artifacts",
+      "excerptOrSummary": "All required repository artifacts are present.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": true,
+      "blocking": true,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "enforcementLevel": "Require",
+        "classification": "hard-invariant",
+        "implemented": true,
+        "passed": true,
+        "transparencyGapHints": []
+      }
+    },
+    {
+      "id": "veritas-1791749335809.policy.ai-instruction-files-synced.evidence",
+      "claimId": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+      "evidenceType": "policy_rule",
+      "method": "validation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "policy_results.ai-instruction-files-synced",
+      "excerptOrSummary": "All required AI instruction files contain the canonical Veritas governance block.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": true,
+      "blocking": false,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "enforcementLevel": "Guide",
+        "classification": "hard-invariant",
+        "implemented": true,
+        "passed": true,
+        "transparencyGapHints": []
+      }
+    },
+    {
+      "id": "veritas-1791749335809.policy.prefer-veritas-routed-delivery.evidence",
+      "claimId": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+      "evidenceType": "policy_rule",
+      "method": "validation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "policy_results.prefer-veritas-routed-delivery",
+      "excerptOrSummary": "All required repository artifacts are present.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": true,
+      "blocking": false,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "enforcementLevel": "Observe",
+        "classification": "promotable-policy",
+        "implemented": true,
+        "passed": true,
+        "transparencyGapHints": []
+      }
+    },
+    {
+      "id": "veritas-1791749335809.readiness-verdict.evidence",
+      "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "evidenceType": "policy_rule",
+      "method": "validation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "readiness",
+      "excerptOrSummary": "Veritas readiness verdict is not ready because blocking requirements or evidence failed.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": false,
+      "blocking": true,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        },
+        "readinessVerdict": "not-ready",
+        "readinessStatus": "rejected",
+        "promotionAllowed": true,
+        "uncoveredPathResult": "warn",
+        "policyResults": {
+          "total": 4,
+          "failedBlocking": [
+            "policy-changes-require-attestation"
+          ],
+          "warnings": []
+        },
+        "evidenceChecks": {
+          "selected": [
+            "required-evidence-check"
+          ],
+          "failed": [],
+          "baselineCiFastPassed": true
+        },
+        "transparencyGapHints": [
+          {
+            "type": "policy_violation",
+            "severity": "high",
+            "message": "Blocking readiness requirement failed: policy-changes-require-attestation.",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+      "claimId": "plumb.governance",
+      "evidenceType": "attestation",
+      "method": "attestation",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": ".veritas/attestations",
+      "excerptOrSummary": "Authority-backed attestation currency is disputed for Protected Standards state drifted.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": false,
+      "blocking": true,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        }
+      }
+    },
+    {
+      "id": "veritas-1791749335809.governance.plumb.governance.audit.evidence",
+      "claimId": "plumb.governance",
+      "evidenceType": "policy_rule",
+      "method": "auditability",
+      "sourceRef": "veritas-1791749335809",
+      "sourceLocator": "governance_state",
+      "excerptOrSummary": "Veritas inspected Protected Standards state drifted for governance artifact integrity.",
+      "observedAt": "2026-10-11T20:08:55.809Z",
+      "collectedBy": "veritas",
+      "integrityRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "passing": false,
+      "blocking": true,
+      "metadata": {
+        "sourceKind": "working-tree",
+        "sourceScope": [
+          "staged",
+          "unstaged",
+          "untracked"
+        ],
+        "files": [
+          "README.md",
+          "docs/concepts.md",
+          "docs/reference.md",
+          "src/escalate.ts",
+          "tests/guard-settings.test.ts"
+        ],
+        "unresolvedFiles": [
+          "docs/concepts.md",
+          "docs/reference.md"
+        ],
+        "integrity": {
+          "sourceRef": "working-tree:e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+          "sourceKind": "working-tree",
+          "sourceScope": [
+            "staged",
+            "unstaged",
+            "untracked"
+          ],
+          "fileRefs": [
+            {
+              "path": "README.md",
+              "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+              "sizeBytes": 6409
+            },
+            {
+              "path": "docs/concepts.md",
+              "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+              "sizeBytes": 8916
+            },
+            {
+              "path": "docs/reference.md",
+              "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+              "sizeBytes": 9392
+            },
+            {
+              "path": "src/escalate.ts",
+              "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+              "sizeBytes": 11980
+            },
+            {
+              "path": "tests/guard-settings.test.ts",
+              "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+              "sizeBytes": 4993
+            }
+          ],
+          "configRefs": {
+            "repoMap": {
+              "name": "plumb",
+              "path": ".veritas/repo-map.json",
+              "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+            },
+            "repoStandards": {
+              "name": "plumb-default",
+              "path": ".veritas/repo-standards/default.repo-standards.json",
+              "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+            },
+            "authoritySettings": {
+              "name": "authority-settings",
+              "path": ".veritas/authority/default.authority-settings.json",
+              "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+            }
+          }
+        },
+        "fileIntegrity": [
+          {
+            "path": "README.md",
+            "hash": "sha256:29f0389da4a57ec88162c3a393efa5dbcffa0611328b0387f29e06039736fa5f",
+            "sizeBytes": 6409
+          },
+          {
+            "path": "docs/concepts.md",
+            "hash": "sha256:a5b537a0fec06603b4295bfea882d904f59c6a29792739e043a967a4c2a92542",
+            "sizeBytes": 8916
+          },
+          {
+            "path": "docs/reference.md",
+            "hash": "sha256:3bb01d7e0b1f966b84f4d6cd251d7bb95b5c4a2349992e044164e0b87eebc5b2",
+            "sizeBytes": 9392
+          },
+          {
+            "path": "src/escalate.ts",
+            "hash": "sha256:ecf3e9fd2b9f22ba5f09f0f3df917116a8ed0592b91d247a7e142bf3f0036075",
+            "sizeBytes": 11980
+          },
+          {
+            "path": "tests/guard-settings.test.ts",
+            "hash": "sha256:bbe10ff07c8f80f3777cf30d38ae986bb71e7a1efb8861f8db008dcb6ce043b0",
+            "sizeBytes": 4993
+          }
+        ],
+        "configIntegrity": {
+          "repoMap": {
+            "name": "plumb",
+            "path": ".veritas/repo-map.json",
+            "hash": "sha256:4c87946160b21f6e43fb4bad69030d3988adc3674660cf7104e4749c142f7ccc"
+          },
+          "repoStandards": {
+            "name": "plumb-default",
+            "path": ".veritas/repo-standards/default.repo-standards.json",
+            "hash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796"
+          },
+          "authoritySettings": {
+            "name": "authority-settings",
+            "path": ".veritas/authority/default.authority-settings.json",
+            "hash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349"
+          }
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "veritas-1791749335809.surface.app.src.verified",
+      "claimId": "plumb.surface.app.src",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "affected work area resolution",
+      "evidenceIds": [
+        "veritas-1791749335809.surface.app.src.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z"
+    },
+    {
+      "id": "veritas-1791749335809.surface.governance.root-manifests.verified",
+      "claimId": "plumb.surface.governance.root-manifests",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "affected work area resolution",
+      "evidenceIds": [
+        "veritas-1791749335809.surface.governance.root-manifests.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z"
+    },
+    {
+      "id": "veritas-1791749335809.surface.verification.tests.verified",
+      "claimId": "plumb.surface.verification.tests",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "affected work area resolution",
+      "evidenceIds": [
+        "veritas-1791749335809.surface.verification.tests.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z"
+    },
+    {
+      "id": "veritas-1791749335809.evidence-check.required-evidence-check.verified",
+      "claimId": "plumb.evidence-check.npm-run-verify",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "npm run verify",
+      "evidenceIds": [
+        "veritas-1791749335809.evidence-check.required-evidence-check.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z"
+    },
+    {
+      "id": "veritas-1791749335809.policy.policy-changes-require-attestation.rejected",
+      "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+      "status": "rejected",
+      "actor": "veritas",
+      "method": "requirements evaluation",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "notes": "Protected standards changes require a fresh authority-backed attestation."
+    },
+    {
+      "id": "veritas-1791749335809.policy.required-veritas-artifacts.verified",
+      "claimId": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "requirements evaluation",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.required-veritas-artifacts.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z",
+      "notes": "The bootstrap Veritas artifacts must stay present so agents and reviewers share the same baseline."
+    },
+    {
+      "id": "veritas-1791749335809.policy.ai-instruction-files-synced.verified",
+      "claimId": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "requirements evaluation",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.ai-instruction-files-synced.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z",
+      "notes": "All required AI tool instruction files must contain the Veritas guidance block."
+    },
+    {
+      "id": "veritas-1791749335809.policy.prefer-veritas-routed-delivery.verified",
+      "claimId": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+      "status": "verified",
+      "actor": "veritas",
+      "method": "requirements evaluation",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.prefer-veritas-routed-delivery.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "verifiedAt": "2026-10-11T20:08:55.809Z",
+      "notes": "Prefer running new AI-guided changes through Veritas readiness checks and the documented evidenceCheck before review."
+    },
+    {
+      "id": "veritas-1791749335809.readiness-verdict.rejected",
+      "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "status": "rejected",
+      "actor": "veritas",
+      "method": "readiness verdict",
+      "evidenceIds": [
+        "veritas-1791749335809.readiness-verdict.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "notes": "Veritas readiness verdict is not ready because blocking requirements or evidence failed."
+    },
+    {
+      "id": "veritas-1791749335809.governance.plumb.governance.disputed",
+      "claimId": "plumb.governance",
+      "status": "disputed",
+      "actor": "veritas",
+      "method": "authority attestation status",
+      "evidenceIds": [
+        "veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+      ],
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "notes": "Authority-backed attestation currency is disputed."
+    }
+  ],
+  "transparencyGaps": [
+    {
+      "id": "plumb.surface.governance.guidance.gap.provenance-gap",
+      "claimId": "plumb.surface.governance.guidance",
+      "type": "provenance_gap",
+      "severity": "medium",
+      "message": "Missing required evidence: policy_rule.",
+      "policyId": "veritas.surface",
+      "createdAt": "2026-10-11T20:08:55.809Z"
+    },
+    {
+      "id": "plumb.surface.governance.guidance.gap.policy-violation",
+      "claimId": "plumb.surface.governance.guidance",
+      "type": "policy_violation",
+      "severity": "medium",
+      "message": "Missing required verification method: auditability.",
+      "policyId": "veritas.surface",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": []
+    },
+    {
+      "id": "plumb.surface.delivery.workflows.gap.provenance-gap",
+      "claimId": "plumb.surface.delivery.workflows",
+      "type": "provenance_gap",
+      "severity": "medium",
+      "message": "Missing required evidence: policy_rule.",
+      "policyId": "veritas.surface",
+      "createdAt": "2026-10-11T20:08:55.809Z"
+    },
+    {
+      "id": "plumb.surface.delivery.workflows.gap.policy-violation",
+      "claimId": "plumb.surface.delivery.workflows",
+      "type": "policy_violation",
+      "severity": "medium",
+      "message": "Missing required verification method: auditability.",
+      "policyId": "veritas.surface",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": []
+    },
+    {
+      "id": "plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+      "claimId": "plumb.governance",
+      "type": "policy_violation",
+      "severity": "high",
+      "message": "Evidence explicitly reported a non-passing result.",
+      "policyId": "veritas.governance-artifact",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.governance.plumb.governance.attestation.evidence"
+      ]
+    },
+    {
+      "id": "plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.audit.evidence",
+      "claimId": "plumb.governance",
+      "type": "policy_violation",
+      "severity": "high",
+      "message": "Evidence explicitly reported a non-passing result.",
+      "policyId": "veritas.governance-artifact",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.governance.plumb.governance.audit.evidence"
+      ]
+    },
+    {
+      "id": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.evidence-veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+      "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+      "type": "policy_violation",
+      "severity": "high",
+      "message": "Evidence explicitly reported a non-passing result.",
+      "policyId": "veritas.policy-result",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+      ]
+    },
+    {
+      "id": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.hint-1",
+      "claimId": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+      "type": "policy_violation",
+      "severity": "high",
+      "message": "Protected standards changes require a fresh authority-backed attestation.",
+      "policyId": "veritas.policy-result",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.policy.policy-changes-require-attestation.evidence"
+      ]
+    },
+    {
+      "id": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.evidence-veritas-1791749335809.readiness-verdict.evidence",
+      "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "type": "policy_violation",
+      "severity": "high",
+      "message": "Evidence explicitly reported a non-passing result.",
+      "policyId": "veritas.readiness-verdict",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.readiness-verdict.evidence"
+      ]
+    },
+    {
+      "id": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.hint-1",
+      "claimId": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+      "type": "policy_violation",
+      "severity": "high",
+      "message": "Blocking readiness requirement failed: policy-changes-require-attestation.",
+      "policyId": "veritas.readiness-verdict",
+      "createdAt": "2026-10-11T20:08:55.809Z",
+      "evidenceIds": [
+        "veritas-1791749335809.readiness-verdict.evidence"
+      ]
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "plumb.surface.governance.guidance",
+        "kind": "claim",
+        "label": "governance.guidance",
+        "claimType": "veritas-affected-surface"
+      },
+      {
+        "id": "subject:repo-surface:plumb:governance.guidance",
+        "kind": "subject",
+        "label": "plumb:governance.guidance",
+        "subjectType": "repo-surface"
+      },
+      {
+        "id": "policy:veritas.surface",
+        "kind": "policy",
+        "label": "veritas.surface",
+        "claimType": "veritas-affected-surface"
+      },
+      {
+        "id": "plumb.surface.governance.root-manifests",
+        "kind": "claim",
+        "label": "governance.root-manifests",
+        "claimType": "veritas-affected-surface"
+      },
+      {
+        "id": "subject:repo-surface:plumb:governance.root-manifests",
+        "kind": "subject",
+        "label": "plumb:governance.root-manifests",
+        "subjectType": "repo-surface"
+      },
+      {
+        "id": "plumb.surface.delivery.workflows",
+        "kind": "claim",
+        "label": "delivery.workflows",
+        "claimType": "veritas-affected-surface"
+      },
+      {
+        "id": "subject:repo-surface:plumb:delivery.workflows",
+        "kind": "subject",
+        "label": "plumb:delivery.workflows",
+        "subjectType": "repo-surface"
+      },
+      {
+        "id": "plumb.surface.app.src",
+        "kind": "claim",
+        "label": "app.src",
+        "claimType": "veritas-affected-surface"
+      },
+      {
+        "id": "subject:repo-surface:plumb:app.src",
+        "kind": "subject",
+        "label": "plumb:app.src",
+        "subjectType": "repo-surface"
+      },
+      {
+        "id": "plumb.surface.verification.tests",
+        "kind": "claim",
+        "label": "verification.tests",
+        "claimType": "veritas-affected-surface"
+      },
+      {
+        "id": "subject:repo-surface:plumb:verification.tests",
+        "kind": "subject",
+        "label": "plumb:verification.tests",
+        "subjectType": "repo-surface"
+      },
+      {
+        "id": "plumb.governance",
+        "kind": "claim",
+        "label": "governance artifact integrity",
+        "claimType": "veritas-governance-artifact"
+      },
+      {
+        "id": "subject:repository:plumb",
+        "kind": "subject",
+        "label": "plumb",
+        "subjectType": "repository"
+      },
+      {
+        "id": "policy:veritas.governance-artifact",
+        "kind": "policy",
+        "label": "veritas.governance-artifact",
+        "claimType": "veritas-governance-artifact"
+      },
+      {
+        "id": "plumb.evidence-check.npm-run-verify",
+        "kind": "claim",
+        "label": "npm run verify",
+        "claimType": "software-evidence-check"
+      },
+      {
+        "id": "policy:veritas.evidence-check",
+        "kind": "policy",
+        "label": "veritas.evidence-check",
+        "claimType": "software-evidence-check"
+      },
+      {
+        "id": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "claim",
+        "label": "policy-changes-require-attestation",
+        "claimType": "veritas-policy-result"
+      },
+      {
+        "id": "subject:policy-rule:plumb:plumb-default:policy-changes-require-attestation",
+        "kind": "subject",
+        "label": "plumb:plumb-default:policy-changes-require-attestation",
+        "subjectType": "policy-rule"
+      },
+      {
+        "id": "policy:veritas.policy-result",
+        "kind": "policy",
+        "label": "veritas.policy-result",
+        "claimType": "veritas-policy-result"
+      },
+      {
+        "id": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+        "kind": "claim",
+        "label": "required-veritas-artifacts",
+        "claimType": "veritas-policy-result"
+      },
+      {
+        "id": "subject:policy-rule:plumb:plumb-default:required-veritas-artifacts",
+        "kind": "subject",
+        "label": "plumb:plumb-default:required-veritas-artifacts",
+        "subjectType": "policy-rule"
+      },
+      {
+        "id": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+        "kind": "claim",
+        "label": "ai-instruction-files-synced",
+        "claimType": "veritas-policy-result"
+      },
+      {
+        "id": "subject:policy-rule:plumb:plumb-default:ai-instruction-files-synced",
+        "kind": "subject",
+        "label": "plumb:plumb-default:ai-instruction-files-synced",
+        "subjectType": "policy-rule"
+      },
+      {
+        "id": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+        "kind": "claim",
+        "label": "prefer-veritas-routed-delivery",
+        "claimType": "veritas-policy-result"
+      },
+      {
+        "id": "subject:policy-rule:plumb:plumb-default:prefer-veritas-routed-delivery",
+        "kind": "subject",
+        "label": "plumb:plumb-default:prefer-veritas-routed-delivery",
+        "subjectType": "policy-rule"
+      },
+      {
+        "id": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "claim",
+        "label": "mergeReadiness",
+        "claimType": "software-readiness-verdict"
+      },
+      {
+        "id": "subject:repository-change:plumb-default:working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "subject",
+        "label": "plumb-default:working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "subjectType": "repository-change"
+      },
+      {
+        "id": "policy:veritas.readiness-verdict",
+        "kind": "policy",
+        "label": "veritas.readiness-verdict",
+        "claimType": "software-readiness-verdict"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.surface.app.src.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "auditability"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.surface.governance.root-manifests.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "auditability"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.surface.verification.tests.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "auditability"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.evidence-check.required-evidence-check.evidence",
+        "kind": "evidence",
+        "label": "test_output",
+        "method": "validation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "validation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.policy.required-veritas-artifacts.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "validation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.policy.ai-instruction-files-synced.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "validation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.policy.prefer-veritas-routed-delivery.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "validation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.readiness-verdict.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "validation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "kind": "evidence",
+        "label": "attestation",
+        "method": "attestation"
+      },
+      {
+        "id": "evidence:veritas-1791749335809.governance.plumb.governance.audit.evidence",
+        "kind": "evidence",
+        "label": "policy_rule",
+        "method": "auditability"
+      },
+      {
+        "id": "event:veritas-1791749335809.surface.app.src.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "affected work area resolution"
+      },
+      {
+        "id": "event:veritas-1791749335809.surface.governance.root-manifests.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "affected work area resolution"
+      },
+      {
+        "id": "event:veritas-1791749335809.surface.verification.tests.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "affected work area resolution"
+      },
+      {
+        "id": "event:veritas-1791749335809.evidence-check.required-evidence-check.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "npm run verify"
+      },
+      {
+        "id": "event:veritas-1791749335809.policy.policy-changes-require-attestation.rejected",
+        "kind": "event",
+        "label": "rejected",
+        "method": "requirements evaluation"
+      },
+      {
+        "id": "event:veritas-1791749335809.policy.required-veritas-artifacts.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "requirements evaluation"
+      },
+      {
+        "id": "event:veritas-1791749335809.policy.ai-instruction-files-synced.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "requirements evaluation"
+      },
+      {
+        "id": "event:veritas-1791749335809.policy.prefer-veritas-routed-delivery.verified",
+        "kind": "event",
+        "label": "verified",
+        "method": "requirements evaluation"
+      },
+      {
+        "id": "event:veritas-1791749335809.readiness-verdict.rejected",
+        "kind": "event",
+        "label": "rejected",
+        "method": "readiness verdict"
+      },
+      {
+        "id": "event:veritas-1791749335809.governance.plumb.governance.disputed",
+        "kind": "event",
+        "label": "disputed",
+        "method": "authority attestation status"
+      },
+      {
+        "id": "transparency-gap:plumb.surface.governance.guidance.gap.provenance-gap",
+        "kind": "transparency-gap",
+        "label": "provenance_gap",
+        "severity": "medium"
+      },
+      {
+        "id": "transparency-gap:plumb.surface.governance.guidance.gap.policy-violation",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "medium"
+      },
+      {
+        "id": "transparency-gap:plumb.surface.delivery.workflows.gap.provenance-gap",
+        "kind": "transparency-gap",
+        "label": "provenance_gap",
+        "severity": "medium"
+      },
+      {
+        "id": "transparency-gap:plumb.surface.delivery.workflows.gap.policy-violation",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "medium"
+      },
+      {
+        "id": "transparency-gap:plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "high"
+      },
+      {
+        "id": "transparency-gap:plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.audit.evidence",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "high"
+      },
+      {
+        "id": "transparency-gap:veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.evidence-veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "high"
+      },
+      {
+        "id": "transparency-gap:veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.hint-1",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "high"
+      },
+      {
+        "id": "transparency-gap:veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.evidence-veritas-1791749335809.readiness-verdict.evidence",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "high"
+      },
+      {
+        "id": "transparency-gap:veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.hint-1",
+        "kind": "transparency-gap",
+        "label": "policy_violation",
+        "severity": "high"
+      }
+    ],
+    "edges": [
+      {
+        "from": "plumb.surface.governance.guidance",
+        "to": "subject:repo-surface:plumb:governance.guidance",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.surface",
+        "to": "plumb.surface.governance.guidance",
+        "kind": "validates"
+      },
+      {
+        "from": "plumb.surface.governance.root-manifests",
+        "to": "subject:repo-surface:plumb:governance.root-manifests",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.surface",
+        "to": "plumb.surface.governance.root-manifests",
+        "kind": "validates"
+      },
+      {
+        "from": "plumb.surface.delivery.workflows",
+        "to": "subject:repo-surface:plumb:delivery.workflows",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.surface",
+        "to": "plumb.surface.delivery.workflows",
+        "kind": "validates"
+      },
+      {
+        "from": "plumb.surface.app.src",
+        "to": "subject:repo-surface:plumb:app.src",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.surface",
+        "to": "plumb.surface.app.src",
+        "kind": "validates"
+      },
+      {
+        "from": "plumb.surface.verification.tests",
+        "to": "subject:repo-surface:plumb:verification.tests",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.surface",
+        "to": "plumb.surface.verification.tests",
+        "kind": "validates"
+      },
+      {
+        "from": "plumb.governance",
+        "to": "subject:repository:plumb",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.governance-artifact",
+        "to": "plumb.governance",
+        "kind": "validates"
+      },
+      {
+        "from": "plumb.evidence-check.npm-run-verify",
+        "to": "subject:repository:plumb",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.evidence-check",
+        "to": "plumb.evidence-check.npm-run-verify",
+        "kind": "validates"
+      },
+      {
+        "from": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "to": "subject:policy-rule:plumb:plumb-default:policy-changes-require-attestation",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.policy-result",
+        "to": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "validates"
+      },
+      {
+        "from": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+        "to": "subject:policy-rule:plumb:plumb-default:required-veritas-artifacts",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.policy-result",
+        "to": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+        "kind": "validates"
+      },
+      {
+        "from": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+        "to": "subject:policy-rule:plumb:plumb-default:ai-instruction-files-synced",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.policy-result",
+        "to": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+        "kind": "validates"
+      },
+      {
+        "from": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+        "to": "subject:policy-rule:plumb:plumb-default:prefer-veritas-routed-delivery",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.policy-result",
+        "to": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+        "kind": "validates"
+      },
+      {
+        "from": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "to": "subject:repository-change:plumb-default:working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "about"
+      },
+      {
+        "from": "policy:veritas.readiness-verdict",
+        "to": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "validates"
+      },
+      {
+        "from": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "to": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "derived-from"
+      },
+      {
+        "from": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "to": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+        "kind": "derived-from"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.surface.app.src.evidence",
+        "to": "plumb.surface.app.src",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.surface.governance.root-manifests.evidence",
+        "to": "plumb.surface.governance.root-manifests",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.surface.verification.tests.evidence",
+        "to": "plumb.surface.verification.tests",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.evidence-check.required-evidence-check.evidence",
+        "to": "plumb.evidence-check.npm-run-verify",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+        "to": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.policy.required-veritas-artifacts.evidence",
+        "to": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.policy.ai-instruction-files-synced.evidence",
+        "to": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.policy.prefer-veritas-routed-delivery.evidence",
+        "to": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.readiness-verdict.evidence",
+        "to": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "to": "plumb.governance",
+        "kind": "supports"
+      },
+      {
+        "from": "evidence:veritas-1791749335809.governance.plumb.governance.audit.evidence",
+        "to": "plumb.governance",
+        "kind": "supports"
+      },
+      {
+        "from": "event:veritas-1791749335809.surface.app.src.verified",
+        "to": "plumb.surface.app.src",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.surface.governance.root-manifests.verified",
+        "to": "plumb.surface.governance.root-manifests",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.surface.verification.tests.verified",
+        "to": "plumb.surface.verification.tests",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.evidence-check.required-evidence-check.verified",
+        "to": "plumb.evidence-check.npm-run-verify",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.policy.policy-changes-require-attestation.rejected",
+        "to": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.policy.required-veritas-artifacts.verified",
+        "to": "veritas.policy.plumb.plumb-default.required-veritas-artifacts",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.policy.ai-instruction-files-synced.verified",
+        "to": "veritas.policy.plumb.plumb-default.ai-instruction-files-synced",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.policy.prefer-veritas-routed-delivery.verified",
+        "to": "veritas.policy.plumb.plumb-default.prefer-veritas-routed-delivery",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.readiness-verdict.rejected",
+        "to": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "updates-status"
+      },
+      {
+        "from": "event:veritas-1791749335809.governance.plumb.governance.disputed",
+        "to": "plumb.governance",
+        "kind": "updates-status"
+      },
+      {
+        "from": "transparency-gap:plumb.surface.governance.guidance.gap.provenance-gap",
+        "to": "plumb.surface.governance.guidance",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:plumb.surface.governance.guidance.gap.policy-violation",
+        "to": "plumb.surface.governance.guidance",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:plumb.surface.delivery.workflows.gap.provenance-gap",
+        "to": "plumb.surface.delivery.workflows",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:plumb.surface.delivery.workflows.gap.policy-violation",
+        "to": "plumb.surface.delivery.workflows",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.attestation.evidence",
+        "to": "plumb.governance",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:plumb.governance.gap.evidence-veritas-1791749335809.governance.plumb.governance.audit.evidence",
+        "to": "plumb.governance",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.evidence-veritas-1791749335809.policy.policy-changes-require-attestation.evidence",
+        "to": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:veritas.policy.plumb.plumb-default.policy-changes-require-attestation.gap.hint-1",
+        "to": "veritas.policy.plumb.plumb-default.policy-changes-require-attestation",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.evidence-veritas-1791749335809.readiness-verdict.evidence",
+        "to": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "flags"
+      },
+      {
+        "from": "transparency-gap:veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8.gap.hint-1",
+        "to": "veritas.veritas-1791749335809.readiness-verdict.working-tree-e7b93e01970c1bfc14cae78f7194b201ac87690ef5450673686a5a1cef6702a8",
+        "kind": "flags"
+      }
+    ]
+  }
+}

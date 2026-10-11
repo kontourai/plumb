@@ -81,6 +81,10 @@ Escalation guards are tunable through the config or environment:
 - `PLUMB_ESCALATE_DAILY_CAP` defaults to `8` across all contexts.
 - `PLUMB_STATE_DIR` defaults to a `state` directory beside `LOG_FILE`.
 
+Guard settings must be plain decimal digits. An empty or malformed value, such
+as `""` or `1e3`, makes escalation fail with an error instead of silently
+changing the guard; leave a key unset to use its default.
+
 Deploy-context runs keep the latest valid SHA in `PLUMB_STATE_DIR/deploy-sha`.
 This is only a one-value pointer for enriching the next deploy failure; it is
 not a run-history store.

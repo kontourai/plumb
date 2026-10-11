@@ -80,10 +80,17 @@ call the agent:
 Only one escalation per context name runs at a time. The lock is a file,
 `lock-<context>`, created exclusively in the state directory and removed when
 the escalation finishes. A second escalation for the same context while the
-lock is held is suppressed as `already running`. Because a hard-killed process
-cannot remove its lock, a lock older than the cooldown is treated as stale and
-reclaimed. With a cooldown of `0`, any lock older than about a second counts as stale,
-so the lock stops preventing concurrent escalations in practice.
+lock is held is suppressed as `already running`. The lock file records the
+process ID of the escalation that holds it. Because a hard-killed process
+cannot remove its lock, a lock is treated as stale and reclaimed once it is
+older than the cooldown and the recorded process is no longer running on this
+machine. A lock whose process is still running is never reclaimed, so the lock
+stays exclusive even with a cooldown of `0` or an agent that runs longer than
+the cooldown. If the recorded process ID has since been reused by an unrelated
+process, the lock is held until that process exits; delete the lock file to
+clear it sooner. A lock holder in another PID namespace, such as a
+different container sharing the state directory, looks dead, so its lock falls
+back to the age check alone.
 
 ### Cooldown
 
