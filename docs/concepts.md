@@ -82,8 +82,8 @@ Only one escalation per context name runs at a time. The lock is a file,
 the escalation finishes. A second escalation for the same context while the
 lock is held is suppressed as `already running`. Because a hard-killed process
 cannot remove its lock, a lock older than the cooldown is treated as stale and
-reclaimed. With a cooldown of `0`, any existing lock counts as stale, so the
-lock no longer prevents concurrent escalations.
+reclaimed. With a cooldown of `0`, any lock older than about a second counts as stale,
+so the lock stops preventing concurrent escalations in practice.
 
 ### Cooldown
 

@@ -91,8 +91,8 @@ whole number. `Number()` accepts more than plain digits: surrounding spaces,
 `1e3`, and `0x10` are accepted, and an empty value becomes `0`. So a guard key
 that is set but empty, such as `PLUMB_ESCALATE_DAILY_CAP=""`, silently means
 `0`. A daily cap of `0` suppresses every escalation. A cooldown of `0` disables
-the cooldown and also lets any existing lock be reclaimed as stale, which in
-practice removes the per-context lock.
+the cooldown and also lets any lock older than about a second be reclaimed as
+stale, which in practice removes the per-context lock.
 
 ## Files written
 
