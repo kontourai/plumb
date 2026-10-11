@@ -98,9 +98,10 @@ At most `PLUMB_ESCALATE_DAILY_CAP` escalations (default `8`) run per day,
 across all contexts. The count lives in `count-YYYYMMDD`, keyed by the
 machine's local date, and counter files older than three days are deleted.
 
-In file names, every character of the context that is not a letter or digit
-becomes `_`. Context names that differ only in those characters, such as
-`db-refresh` and `db_refresh`, therefore share a lock and a cooldown.
+Context names are encoded into file names without collisions, so names that
+differ only in punctuation or case, such as `db-refresh`, `db_refresh`, and
+`DB-refresh`, have separate locks and cooldowns. See
+[Files written](reference.md#files-written) for the encoding.
 
 ## Agent workspace
 
