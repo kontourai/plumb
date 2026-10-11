@@ -40,7 +40,9 @@
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test dist/tests/*.test.js",
     "verify": "npm run typecheck && npm test && npm pack --dry-run",
-    "prepublishOnly": "npm run verify"
+    "prepublishOnly": "npm run verify",
+    "docs:check": "npx -y github:kontourai/docs-kit#3c9cf686ddfe0baf14862748db04e661607f8d9a docs-kit check",
+    "docs:build": "npx -y github:kontourai/docs-kit#3c9cf686ddfe0baf14862748db04e661607f8d9a docs-kit build"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
