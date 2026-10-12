@@ -110,6 +110,13 @@ units.
 
 ## Programmatic API
 
+For check observations without deployment configuration or escalation, use
+`@kontourai/plumb/checks`. Producers keep their domain adapters and policy;
+Plumb records bounded findings and subject/file digests, confirms current basis,
+and summarizes explicitly required checks. Missing output or uncertain basis
+cannot pass. See [shared check observations](docs/shared-checks.md) for the
+contract and integration boundaries.
+
 ```ts
 import { escalate, loadConfig, run } from "@kontourai/plumb";
 

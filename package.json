@@ -1,7 +1,7 @@
 {
   "name": "@kontourai/plumb",
   "version": "0.1.0",
-  "description": "The surveyor's plumb line: checks that things are true — and calls in repairs when they aren't.",
+  "description": "The surveyor's plumb line: checks that things are true \u2014 and calls in repairs when they aren't.",
   "license": "Apache-2.0",
   "type": "module",
   "private": false,
@@ -20,6 +20,10 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "default": "./dist/src/index.js"
+    },
+    "./checks": {
+      "types": "./dist/src/checks.d.ts",
+      "default": "./dist/src/checks.js"
     }
   },
   "bin": {
@@ -32,7 +36,8 @@
     "systemd/",
     "plumb.config.example",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "docs/shared-checks.md"
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",

@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { fixtureGitEnvironment } from "./git-environment.js";
 
 // Compiled to dist/tests/, so the published bin is two levels up.
 const plumbBin = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../bin/plumb.mjs");
@@ -17,7 +18,7 @@ function cliFixture(extraConfigLines: string[]) {
   mkdirSync(stateDirectory);
   // A pre-initialised workdir means no clone; the failed fetch is harmless.
   mkdirSync(agentWorkdir);
-  execFileSync("git", ["init", "-q", agentWorkdir]);
+  execFileSync("git", ["init", "-q", agentWorkdir], { env: fixtureGitEnvironment() });
   const evidence = path.join(root, "evidence.log");
   writeFileSync(evidence, "failure evidence\n");
   const configPath = path.join(root, "plumb.config");
