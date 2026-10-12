@@ -1,7 +1,7 @@
 {
   "name": "@kontourai/plumb",
-  "version": "0.1.0",
-  "description": "The surveyor's plumb line: checks that things are true \u2014 and calls in repairs when they aren't.",
+  "version": "0.2.0",
+  "description": "The surveyor's plumb line: checks that things are true — and calls in repairs when they aren't.",
   "license": "Apache-2.0",
   "type": "module",
   "private": false,
