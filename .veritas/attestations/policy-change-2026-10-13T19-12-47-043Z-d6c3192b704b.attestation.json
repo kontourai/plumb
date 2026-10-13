@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b",
+  "kind": "policy-change",
+  "actor": {
+    "id": "brian-anderson",
+    "displayName": "Brian Anderson",
+    "identityEvidence": {
+      "gitEmail": null,
+      "signingKeyFingerprint": null
+    }
+  },
+  "attestedAt": "2026-10-13T19:12:47.043Z",
+  "repoStandardsHash": "sha256:737146ee6b0d729976ab6e244c62220936606dd41dceefbd7aaeb3a1a6f20796",
+  "repoMapHash": "sha256:89d6413dcf9ecb51635019e8cdee54400eae8f7fcb2826f98339a82f7ac8fba6",
+  "repoMapHashAlgorithm": "public-policy-v1",
+  "authoritySettingsHash": "sha256:d3a85abe7180bdbc90ea1cd6c69ad3cdabff581b282a4d32f3bd1206b5b77349",
+  "priorAttestationId": "policy-change-2026-10-11T07-16-24-458Z-5e89534d5e08",
+  "validUntilDays": 90,
+  "notes": "Rename the root docs manifest docs-kit.json -> corpus.json (Corpus manifest v2); like-for-like, no coverage change.",
+  "metadata": {
+    "protectedStandardsPaths": {
+      "repoStandardsPath": ".veritas/repo-standards/default.repo-standards.json",
+      "repoMapPath": ".veritas/repo-map.json",
+      "authoritySettingsPath": ".veritas/authority/default.authority-settings.json"
+    },
+    "supersedes": "policy-change-2026-10-11T07-16-24-458Z-5e89534d5e08",
+    "approvalRef": "https://github.com/kontourai/corpus/pull/11",
+    "approvalRefPolicy": {
+      "mode": "reference-only",
+      "matchedPrefix": null,
+      "requiresResolution": false
+    },
+    "approvalResolution": null
+  },
+  "surface": {
+    "claim": {
+      "id": "veritas.attestation.policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b",
+      "subjectType": "veritas-protected-standards",
+      "subjectId": "protected-standards",
+      "facet": "veritas.attestations",
+      "claimType": "veritas-human-attestation",
+      "fieldOrBehavior": "policy-change",
+      "value": {
+        "contentHash": "fa690572f6a9a9b5b5d9b8c0ed6f03a2917521c04d5a85d2447085d4168f6e55",
+        "validUntil": "2027-01-11T19:12:47.043Z"
+      },
+      "createdAt": "2026-10-13T19:12:47.043Z",
+      "updatedAt": "2026-10-13T19:12:47.043Z",
+      "status": "verified",
+      "impactLevel": "high",
+      "confidenceBasis": {
+        "sourceQuality": "strong",
+        "reviewerAuthority": "human",
+        "evidenceStrength": "strong",
+        "impactLevel": "high"
+      }
+    },
+    "evidence": {
+      "id": "evidence.attestation.veritas.attestation.policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b",
+      "claimId": "veritas.attestation.policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b",
+      "evidenceType": "attestation",
+      "method": "attestation",
+      "sourceRef": "veritas:protected-standards",
+      "excerptOrSummary": "Rename the root docs manifest docs-kit.json -> corpus.json (Corpus manifest v2); like-for-like, no coverage change.",
+      "observedAt": "2026-10-13T19:12:47.043Z",
+      "collectedBy": "brian-anderson",
+      "integrityRef": "fa690572f6a9a9b5b5d9b8c0ed6f03a2917521c04d5a85d2447085d4168f6e55",
+      "metadata": {
+        "actor": {
+          "id": "brian-anderson",
+          "displayName": "Brian Anderson"
+        },
+        "attestedAt": "2026-10-13T19:12:47.043Z",
+        "validUntil": "2027-01-11T19:12:47.043Z",
+        "contentHash": "fa690572f6a9a9b5b5d9b8c0ed6f03a2917521c04d5a85d2447085d4168f6e55"
+      },
+      "sourceLocator": ".veritas/attestations"
+    },
+    "event": {
+      "id": "veritas.attestation.policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b.verified",
+      "claimId": "veritas.attestation.policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b",
+      "status": "verified",
+      "actor": "brian-anderson",
+      "method": "human attestation",
+      "evidenceIds": [
+        "evidence.attestation.veritas.attestation.policy-change-2026-10-13T19-12-47-043Z-d6c3192b704b"
+      ],
+      "createdAt": "2026-10-13T19:12:47.043Z",
+      "verifiedAt": "2026-10-13T19:12:47.043Z"
+    }
+  }
+}
