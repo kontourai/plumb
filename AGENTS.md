@@ -12,7 +12,7 @@
 
 ## Docs
 
-- Docs are published with docs-kit to <https://kontourai.github.io/plumb/>.
-  `docs-kit.json` lists the published docs and MCP topics, and
+- Docs are published with Corpus to <https://kontourai.github.io/plumb/>.
+  `corpus.json` lists the published docs and MCP topics, and
   `npm run docs:check` is the gate. When you change code that a document
   `covers`, update that document.

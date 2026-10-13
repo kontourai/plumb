@@ -1,5 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "purpose": "Turn failed deployment checks into inspectable observations and agent-drafted repair proposals.",
+  "builtOn": [],
   "product": "plumb",
   "title": "Plumb",
   "tagline": "Turns failed deployment checks into agent-drafted repair proposals.",
