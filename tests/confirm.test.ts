@@ -33,10 +33,10 @@ function confirmFixture(extraConfigLines: string[] = []) {
     ...extraConfigLines,
     "",
   ].join("\n"));
-  const confirm = (repro: string, findingPath = finding) =>
+  const confirm = (repro: string, findingPath = finding, env: NodeJS.ProcessEnv = {}) =>
     spawnSync(process.execPath, [plumbBin, "confirm", "board-delete", findingPath, repro], {
       encoding: "utf8",
-      env: { ...process.env, PLUMB_CONFIG: configPath },
+      env: { ...process.env, PLUMB_CONFIG: configPath, ...env },
     });
   const prompt = () => (existsSync(promptFile) ? readFileSync(promptFile, "utf8") : undefined);
   const findingsLog = () => readFileSync(path.join(root, "checks-findings.log"), "utf8");
@@ -44,10 +44,13 @@ function confirmFixture(extraConfigLines: string[] = []) {
   return { root, finding, confirm, prompt, findingsLog, cleanup };
 }
 
-test("a failing repro confirms the finding and escalates it with the finding and repro output", () => {
+const reproduced = 'echo reproduced > "$PLUMB_VERDICT_FILE"';
+const notReproduced = 'echo not-reproduced > "$PLUMB_VERDICT_FILE"';
+
+test("a repro that reports reproduced and fails confirms the finding and escalates it", () => {
   const fixture = confirmFixture();
   try {
-    const result = fixture.confirm("echo 'still on /boards/repro after delete'; exit 1");
+    const result = fixture.confirm(`echo 'still on /boards/repro after delete'; ${reproduced}; exit 1`);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.stdout.trim(), "plumb: board-delete reproduced (repro exit 1)");
     const prompt = fixture.prompt();
@@ -55,79 +58,166 @@ test("a failing repro confirms the finding and escalates it with the finding and
     assert.match(prompt, /named "board-delete" failed/);
     assert.ok(prompt.includes(findingText), "the finding reached the agent");
     assert.ok(prompt.includes("still on /boards/repro after delete"), "the repro output reached the agent");
-    assert.match(prompt, /confirmed because its repro command failed with exit 1/);
-    assert.match(fixture.findingsLog(), /OUTCOME reproduced \(exit 1\)/);
+    assert.match(prompt, /repro reported "reproduced" and exited 1/);
+    assert.match(fixture.findingsLog(), /OUTCOME reproduced \(verdict reproduced, exit 1\)/);
   } finally {
     fixture.cleanup();
   }
 });
 
-test("a passing repro does not reproduce the finding and never runs the agent", () => {
+test("a repro that reports not-reproduced and passes never runs the agent", () => {
   const fixture = confirmFixture();
   try {
-    const result = fixture.confirm("echo 'navigated home'; exit 0");
+    const result = fixture.confirm(`echo 'navigated home'; ${notReproduced}; exit 0`);
     assert.equal(result.status, 2, result.stderr);
     assert.equal(result.stdout.trim(), "plumb: board-delete not-reproduced (repro exit 0)");
     assert.equal(fixture.prompt(), undefined);
     const log = fixture.findingsLog();
     assert.ok(log.includes(findingText));
     assert.match(log, /navigated home/);
-    assert.match(log, /OUTCOME not-reproduced \(exit 0\)/);
+    assert.match(log, /OUTCOME not-reproduced \(verdict not-reproduced, exit 0\)/);
   } finally {
     fixture.cleanup();
   }
 });
 
-test("a repro whose command is missing is inconclusive, not a confirmed defect", () => {
+for (const [name, repro] of [
+  ["a crashed harness that exits 1", `node -e 'throw new Error("browser executable missing")'`],
+  ["a missing working directory", "cd /plumb-test-absent-directory-4f1c && exit 0"],
+  ["a missing command", "plumb-test-no-such-command-4f1c --run"],
+  ["a child killed by a signal inside the shell", `node -e 'process.kill(process.pid, "SIGTERM")'; exit $?`],
+] as const) {
+  test(`${name} without a verdict is inconclusive, not a confirmed defect`, () => {
+    const fixture = confirmFixture();
+    try {
+      const result = fixture.confirm(repro);
+      assert.equal(result.status, 3, result.stderr);
+      assert.match(result.stdout, /^plumb: board-delete inconclusive \(repro exited \d+ without writing a verdict to PLUMB_VERDICT_FILE\)/);
+      assert.equal(fixture.prompt(), undefined);
+    } finally {
+      fixture.cleanup();
+    }
+  });
+}
+
+test("a verdict that disagrees with the exit status is inconclusive", () => {
   const fixture = confirmFixture();
   try {
-    const result = fixture.confirm("plumb-test-no-such-command-4f1c --run");
-    assert.equal(result.status, 3, result.stderr);
-    assert.match(result.stdout, /^plumb: board-delete inconclusive \(repro exited 127: the command could not be found or run\)/);
+    const claimsDefect = fixture.confirm(`${reproduced}; exit 0`);
+    assert.equal(claimsDefect.status, 3, claimsDefect.stderr);
+    assert.match(claimsDefect.stdout, /inconclusive \(repro verdict "reproduced" does not match exit 0\)/);
+    const claimsPass = fixture.confirm(`${notReproduced}; exit 1`);
+    assert.equal(claimsPass.status, 3, claimsPass.stderr);
     assert.equal(fixture.prompt(), undefined);
-    assert.match(fixture.findingsLog(), /OUTCOME inconclusive/);
   } finally {
     fixture.cleanup();
   }
 });
 
-test("a repro that exceeds PLUMB_REPRO_TIMEOUT_SECS is inconclusive", () => {
+test("the timeout is a hard deadline that also stops the repro's descendants", () => {
   const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="1"']);
   try {
+    const late = path.join(fixture.root, "descendant-survived");
     const started = Date.now();
-    const result = fixture.confirm("sleep 10; exit 1");
-    assert.ok(Date.now() - started < 8_000, "the timeout stopped the repro");
+    const result = fixture.confirm(
+      `(sleep 3; touch ${late}) & trap '' TERM; while :; do sleep 0.1; done`,
+    );
+    assert.ok(Date.now() - started < 3_000, "the deadline held against a shell that ignores SIGTERM");
     assert.equal(result.status, 3, result.stderr);
     assert.match(result.stdout, /inconclusive \(repro timed out after 1s\)/);
+    spawnSync("sleep", ["3"]);
+    assert.equal(existsSync(late), false, "the background child was killed with the group");
     assert.equal(fixture.prompt(), undefined);
   } finally {
     fixture.cleanup();
   }
 });
 
-test("a malformed PLUMB_REPRO_TIMEOUT_SECS is refused before the repro runs", () => {
-  const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="1e3"']);
+test("processes a repro leaves behind are stopped when it exits", () => {
+  const fixture = confirmFixture();
   try {
-    const marker = path.join(fixture.root, "repro-ran");
-    const result = fixture.confirm(`touch ${marker}; exit 1`);
-    assert.equal(result.status, 1);
-    assert.equal(result.stderr.trim(), 'plumb: PLUMB_REPRO_TIMEOUT_SECS must be a non-negative integer, got "1e3"');
-    assert.equal(existsSync(marker), false);
-    assert.equal(fixture.prompt(), undefined);
+    const late = path.join(fixture.root, "leftover-survived");
+    const result = fixture.confirm(`(sleep 2; touch ${late}) & ${notReproduced}; exit 0`);
+    assert.equal(result.status, 2, result.stderr);
+    spawnSync("sleep", ["3"]);
+    assert.equal(existsSync(late), false);
   } finally {
     fixture.cleanup();
   }
 });
+
+test("escalation evidence is this run's record even if the findings log changes meanwhile", () => {
+  const fixture = confirmFixture();
+  try {
+    // Workspace preparation runs git; this shim appends another run's record
+    // to the shared findings log at that moment, as a concurrent confirm would.
+    const shimDirectory = path.join(fixture.root, "shim");
+    mkdirSync(shimDirectory);
+    const shim = path.join(shimDirectory, "git");
+    writeFileSync(shim, `#!/bin/sh\nprintf '=== other run\\nOTHER-RUN-MARKER\\nOUTCOME not-reproduced\\n' >> "${path.join(fixture.root, "checks-findings.log")}"\nexit 1\n`);
+    spawnSync("chmod", ["+x", shim]);
+    const result = fixture.confirm(`${reproduced}; exit 1`, fixture.finding, {
+      PATH: `${shimDirectory}:${process.env.PATH}`,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const prompt = fixture.prompt() ?? "";
+    assert.ok(prompt.includes(findingText));
+    assert.ok(!prompt.includes("OTHER-RUN-MARKER"), "another run's record did not replace this one");
+    assert.match(fixture.findingsLog(), /OTHER-RUN-MARKER/);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test("a long repro command cannot push the finding out of the evidence", () => {
+  const fixture = confirmFixture();
+  try {
+    const result = fixture.confirm(`# ${"x".repeat(5_000)}\n${reproduced}; exit 1`);
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok((fixture.prompt() ?? "").includes(findingText));
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test("the output tail keeps stdout and stderr in the order they were written", () => {
+  const fixture = confirmFixture();
+  try {
+    const result = fixture.confirm(
+      `node -e 'process.stderr.write("E".repeat(2400))'; echo FINAL_ASSERTION_FAILURE; ${reproduced}; exit 1`,
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok((fixture.prompt() ?? "").includes("FINAL_ASSERTION_FAILURE"));
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+for (const key of ["PLUMB_REPRO_TIMEOUT_SECS", "PLUMB_ESCALATE_DAILY_CAP", "PLUMB_ESCALATE_COOLDOWN_SECS"]) {
+  test(`a malformed ${key} is refused before the repro runs`, () => {
+    const fixture = confirmFixture([`${key}="1e3"`]);
+    try {
+      const marker = path.join(fixture.root, "repro-ran");
+      const result = fixture.confirm(`touch ${marker}; ${notReproduced}; exit 0`);
+      assert.equal(result.status, 1);
+      assert.equal(result.stderr.trim(), `plumb: ${key} must be a non-negative integer, got "1e3"`);
+      assert.equal(existsSync(marker), false);
+      assert.equal(fixture.prompt(), undefined);
+    } finally {
+      fixture.cleanup();
+    }
+  });
+}
 
 test("a missing or empty finding file is an error, not a confirmation", () => {
   const fixture = confirmFixture();
   try {
-    const missing = fixture.confirm("exit 1", path.join(fixture.root, "absent.md"));
+    const missing = fixture.confirm(`${reproduced}; exit 1`, path.join(fixture.root, "absent.md"));
     assert.equal(missing.status, 1);
     assert.match(missing.stderr, /^plumb: ENOENT/);
     const empty = path.join(fixture.root, "empty.md");
     writeFileSync(empty, "  \n");
-    const blank = fixture.confirm("exit 1", empty);
+    const blank = fixture.confirm(`${reproduced}; exit 1`, empty);
     assert.equal(blank.status, 1);
     assert.equal(blank.stderr.trim(), `plumb: finding file is empty: ${empty}`);
     assert.equal(fixture.prompt(), undefined);
@@ -139,7 +229,7 @@ test("a missing or empty finding file is an error, not a confirmation", () => {
 test("a confirmed finding goes through the escalation guards", () => {
   const fixture = confirmFixture(['PLUMB_ESCALATE_DAILY_CAP="0"']);
   try {
-    const result = fixture.confirm("exit 1");
+    const result = fixture.confirm(`${reproduced}; exit 1`);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(fixture.prompt(), undefined);
     assert.match(

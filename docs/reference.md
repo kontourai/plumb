@@ -52,13 +52,16 @@ Runs `<repro-command>` and escalates the finding in `<finding-file>` under
 
 | Outcome | Meaning | Exit |
 | --- | --- | --- |
-| `reproduced` | The repro exited non-zero (not 126 or 127). The finding was escalated or a guard suppressed it. | 0 |
-| `not-reproduced` | The repro exited 0. Nothing was escalated. | 2 |
-| `inconclusive` | The repro failed to start, timed out, was killed, or exited 126 or 127. Nothing was escalated. | 3 |
+| `reproduced` | The repro wrote `reproduced` to `PLUMB_VERDICT_FILE` and exited non-zero. The finding was escalated or a guard suppressed it. | 0 |
+| `not-reproduced` | The repro wrote `not-reproduced` and exited 0. Nothing was escalated. | 2 |
+| `inconclusive` | No verdict, a verdict that disagrees with the exit status, a timeout, a signal, or a start failure. Nothing was escalated. | 3 |
 
 Exits 1 when the config is invalid, the finding file is missing or blank,
-`PLUMB_REPRO_TIMEOUT_SECS` or a guard setting is malformed, or the agent
-command fails.
+`PLUMB_REPRO_TIMEOUT_SECS` or a guard setting is malformed (checked before
+the repro runs), or the agent command fails.
+
+The repro sees two extra variables: `PLUMB_REPRO_CMD`, the command itself,
+and `PLUMB_VERDICT_FILE`, where it writes its verdict.
 
 ### Usage and exit codes
 
@@ -117,7 +120,7 @@ holds while its escalation runs.
 | --- | --- | --- |
 | `LOG_FILE` | `plumb run` | `=== <timestamp> plumb checks[ context=<key>=<value>]` headers and checks output. |
 | `LOG_FILE` with `.log` replaced by `-escalations.log` | escalations | Agent output and `<timestamp> SUPPRESS <context> (<reason>)` lines. |
-| `LOG_FILE` with `.log` replaced by `-findings.log` | `plumb confirm` | One record per run: header, finding, repro command and output, `OUTCOME` line. |
+| `LOG_FILE` with `.log` replaced by `-findings.log` | `plumb confirm` | One record per run: header, repro command and output, finding, `OUTCOME` line. |
 | `<state>/lock-<context>` | escalations | Held while an escalation for the context runs. |
 | `<state>/last-<context>[_3adeploy_3a<sha>]` | escalations | Unix time of the last escalation, for the cooldown. |
 | `<state>/count-YYYYMMDD` | escalations | Number of escalations that day; deleted after three days. |
@@ -217,10 +220,11 @@ confirmFinding(
 The function behind `plumb confirm`. `ConfirmFindingOptions` has
 `escalateOptions?: EscalateOptions`, passed to the escalation; when it sets no
 `runContext`, plumb supplies one that says the finding was confirmed by a
-failing repro. `ConfirmFindingResult` is `{ outcome, status, reason?,
+failing repro. `ConfirmFindingResult` is `{ outcome, status, verdict?, reason?,
 escalation? }`: `outcome` is a `FindingOutcome`
 (`"reproduced" | "not-reproduced" | "inconclusive"`), `status` is the repro's
-exit status or `null`, `reason` explains an inconclusive result, and
+exit status or `null`, `verdict` is what the repro wrote to
+`PLUMB_VERDICT_FILE`, `reason` explains an inconclusive result, and
 `escalation` is the `EscalateResult`, present only when reproduced.
 `findingsLogPath(logFile)` returns the findings log path. Throws on a missing
 or blank finding file, a malformed setting, or a failed agent command.
@@ -230,7 +234,7 @@ or blank finding file, a malformed setting, or a failed agent command.
 | Symptom | Cause |
 | --- | --- |
 | `plumb: Missing required config key: REPO_URL` | `PLUMB_CONFIG` is unset or points at the wrong file, or the file leaves a required key empty. A preceding `No such file or directory` line from bash names the path it tried. |
-| `plumb confirm` prints `inconclusive (repro exited 127: ...)` | The repro command was not found from plumb's working directory or `PATH`. Use an absolute path or `cd` inside the repro command. |
+| `plumb confirm` prints `inconclusive (repro exited <N> without writing a verdict ...)` | The repro never reached its deciding assertion, for example because a command was missing or the harness crashed, or it does not write `PLUMB_VERDICT_FILE`. Its output is in the findings log. |
 | `plumb: ignoring malformed context ...` | The `--context` value failed validation, for example a `deploy` value that is not 7 to 64 hex digits. The run continued without it. |
 | Usage text and exit 1 | The arguments did not match a form above, such as `--context=deploy=...` or `plumb escalate` with one argument. |
 | A check failed but no agent ran | Look for a `SUPPRESS` line in the escalations log: the lock, cooldown, or daily cap stopped it. |

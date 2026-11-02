@@ -58,32 +58,44 @@ the job separate from the health of the deployment.
 
 A finding from exploratory testing, an audit, or another agent is a claim, not
 evidence. `plumb confirm <context> <finding-file> <repro-command>` turns it
-into evidence before any agent spends effort on it:
+into evidence before any agent spends effort on it.
 
-1. Reads the finding file. A missing or blank file is an error.
-2. Runs the repro command as `bash -c 'set -uo pipefail; eval "$PLUMB_REPRO_CMD"'`
-   with the config's variables in its environment, stopping it after
-   `PLUMB_REPRO_TIMEOUT_SECS` (default 900; `0` means no deadline).
-3. Classifies the result:
-   - **reproduced**: the repro exited non-zero, other than 126 or 127.
-   - **not-reproduced**: the repro exited 0.
-   - **inconclusive**: the repro could not show anything. It failed to start,
-     timed out, was killed by a signal, or exited 126 or 127, which bash uses
-     for a command that cannot run or does not exist.
-4. Appends one record to the findings log: the finding (first 1500 bytes),
-   the repro command, its combined output (last 1500 bytes), and an
-   `OUTCOME` line.
-5. Only for **reproduced**, escalates under the given context name with the
-   findings log as evidence, through the usual
-   [guards](#escalation-guards).
+An exit status alone cannot tell a failed assertion from a crashed harness: a
+missing browser and a real defect can both exit 1. So the repro must say
+what it observed. Plumb sets `PLUMB_VERDICT_FILE`, and the repro writes
+`reproduced` (the defect showed) or `not-reproduced` (the expected behavior
+held) to that file. Write the verdict only once the assertion that decides it
+has actually run.
 
-The repro decides, so write it to assert the behavior you expect. It must fail
-while the defect exists and pass once it is fixed. A repro that asserts the
-current behavior confirms nothing.
+1. Reads the finding file. A missing or blank file is an error. Validates
+   `PLUMB_REPRO_TIMEOUT_SECS` and the guard settings before running anything.
+2. Runs the repro command as `bash -c 'set -o pipefail; eval "$PLUMB_REPRO_CMD"'`
+   in its own process group, with the config's variables in its environment.
+   Stdout and stderr go to one file, so their order is kept.
+3. Stops the whole process group after `PLUMB_REPRO_TIMEOUT_SECS` (default
+   900; `0` means no deadline), and again when the repro's shell exits, so
+   processes it left behind do not outlive it. A process that moves itself
+   into a new session or process group escapes this cleanup.
+4. Classifies the result:
+   - **reproduced**: the verdict is `reproduced` and the repro exited
+     non-zero.
+   - **not-reproduced**: the verdict is `not-reproduced` and the repro exited
+     0.
+   - **inconclusive**: anything else. That covers no verdict, a verdict that
+     disagrees with the exit status, a timeout, a signal, or a repro that
+     could not start.
+5. Appends one record to the findings log: the context, the repro command
+   (first 300 bytes), its output (last 1500 bytes), the finding (first 1500
+   bytes), and an `OUTCOME` line. These budgets keep the whole record inside
+   the escalation's 4000-byte evidence window.
+6. Only for **reproduced**, escalates under the given context name through
+   the usual [guards](#escalation-guards). The evidence is this run's own
+   record, so another confirmation writing to the findings log at the same
+   time cannot replace it.
 
-On a timeout plumb stops the repro's shell. Processes that the repro started,
-such as a browser, may keep running. Have long repros clean up after
-themselves.
+Write the repro to assert the behavior you expect, so it reports `reproduced`
+while the defect exists and `not-reproduced` once it is fixed. A repro that
+asserts the current behavior confirms nothing.
 
 The finding text goes into the agent's prompt. Treat findings from untrusted
 sources the way you would treat any log content you escalate.
