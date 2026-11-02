@@ -45,8 +45,16 @@ function confirmFixture(extraConfigLines: string[] = []) {
 }
 
 /** A repro fragment that starts a long-lived descendant and records its pid. */
+// Each descendant gets a command line no other process has, so cleanup can
+// recognise it as the fixture's own even after its repro shell has exited.
+const descendantCommands = new Map<string, string>();
+let descendantCount = 0;
+
 function descendant(pidFile: string): string {
-  return `sleep 30 & echo $! > ${pidFile}`;
+  descendantCount += 1;
+  const seconds = `30.${process.pid}${String(descendantCount).padStart(4, "0")}`;
+  descendantCommands.set(pidFile, `sleep ${seconds}`);
+  return `sleep ${seconds} & echo $! > ${pidFile}`;
 }
 
 function alive(pid: number): boolean {
@@ -81,20 +89,19 @@ function psField(field: string, pid: number): string | undefined {
 }
 
 /**
- * Kills a recorded descendant and the rest of its repro group. Fails closed:
- * it acts only when the pid is still the fixture's `sleep 30`, its group
- * leader is plumb's gated repro shell, and that group is not the test
- * runner's. Any failed lookup or mismatch (for example a recycled pid) kills
- * nothing.
+ * Kills a recorded descendant and the rest of its process group. Fails closed:
+ * it acts only when the pid still runs the exact, unique command the fixture
+ * gave it, and its group is a valid group other than the test runner's. Any
+ * failed lookup or mismatch (for example a recycled pid) kills nothing.
  */
-function reap(pid: number | undefined): void {
-  if (pid === undefined || !alive(pid)) return;
-  if (psField("command", pid) !== "sleep 30") return;
+function reap(pid: number | undefined, pidFile: string): void {
+  const expected = descendantCommands.get(pidFile);
+  if (pid === undefined || expected === undefined || !alive(pid)) return;
+  if (psField("command", pid) !== expected) return;
   const pgid = Number(psField("pgid", pid));
   const ownGroup = Number(psField("pgid", process.pid));
   if (!Number.isSafeInteger(pgid) || pgid <= 1 || !Number.isSafeInteger(ownGroup) || ownGroup <= 1) return;
   if (pgid === ownGroup) return;
-  if (!(psField("command", pgid) ?? "").includes("plumb_go")) return;
   try {
     process.kill(-pgid, "SIGKILL");
   } catch {
@@ -186,7 +193,7 @@ test("the timeout is a hard deadline that also stops the repro's descendants", a
     assert.ok(await settlesDead(pid), "the background child was killed with the group");
     assert.equal(fixture.prompt(), undefined);
   } finally {
-    reap(pid);
+    reap(pid, pidFile);
     fixture.cleanup();
   }
 });
@@ -201,7 +208,7 @@ test("processes a repro leaves behind are stopped when it exits", async () => {
     pid = readPid(pidFile);
     assert.ok(await settlesDead(pid));
   } finally {
-    reap(pid);
+    reap(pid, pidFile);
     fixture.cleanup();
   }
 });
@@ -267,7 +274,7 @@ for (const [name, signal] of [["SIGTERM", "TERM"], ["SIGKILL", "KILL"]] as const
       assert.ok(await settlesDead(pid), "the repro's group outlived its supervisor");
       assert.equal(fixture.prompt(), undefined);
     } finally {
-      reap(pid);
+      reap(pid, pidFile);
       fixture.cleanup();
     }
   });
@@ -307,7 +314,7 @@ test("Ctrl-C to plumb's process group also stops the detached repro", async () =
     if (pid === undefined && existsSync(pidFile)) {
       try { pid = Number(readFileSync(pidFile, "utf8").trim()) || undefined; } catch {}
     }
-    reap(pid);
+    reap(pid, pidFile);
     fixture.cleanup();
   }
 });
