@@ -54,11 +54,12 @@ Runs `<repro-command>` and escalates the finding in `<finding-file>` under
 | --- | --- | --- |
 | `reproduced` | The repro wrote `reproduced` to `PLUMB_VERDICT_FILE` and exited non-zero. The finding was escalated or a guard suppressed it. | 0 |
 | `not-reproduced` | The repro wrote `not-reproduced` and exited 0. Nothing was escalated. | 2 |
-| `inconclusive` | No verdict, a verdict that disagrees with the exit status, a timeout, a signal, or a start failure. Nothing was escalated. | 3 |
+| `inconclusive` | No verdict, a verdict that disagrees with the exit status, an invalid verdict file, output over 64 MiB, a timeout, a signal, or a start failure. Nothing was escalated. | 3 |
 
 Exits 1 when the config is invalid, the finding file is missing or blank,
-`PLUMB_REPRO_TIMEOUT_SECS` or a guard setting is malformed (checked before
-the repro runs), or the agent command fails.
+`PLUMB_REPRO_TIMEOUT_SECS` or a guard setting is malformed or
+`PLUMB_REPRO_TIMEOUT_SECS` exceeds `2000000` (both checked before the repro
+runs), or the agent command fails.
 
 The repro sees two extra variables: `PLUMB_REPRO_CMD`, the command itself,
 and `PLUMB_VERDICT_FILE`, where it writes its verdict.
@@ -103,7 +104,7 @@ environment counts as configured even when the file does not set it.
 | `PLUMB_STATE_DIR` | no | `state` beside `LOG_FILE` | Directory for lock, cooldown, counter, and `deploy-sha` files. |
 | `PLUMB_ESCALATE_COOLDOWN_SECS` | no | `21600` | Per-context cooldown in seconds. Also the age after which a lock whose process has exited is treated as stale. |
 | `PLUMB_ESCALATE_DAILY_CAP` | no | `8` | Escalations allowed per local day, across all contexts. |
-| `PLUMB_REPRO_TIMEOUT_SECS` | no | `900` | Deadline for a `plumb confirm` repro command, in seconds. `0` means no deadline. |
+| `PLUMB_REPRO_TIMEOUT_SECS` | no | `900` | Deadline for a `plumb confirm` repro command, in seconds, at most `2000000`. `0` means no deadline. |
 
 A required key that is unset or empty fails with
 `Missing required config key: <KEY>`. The two guard settings must be plain

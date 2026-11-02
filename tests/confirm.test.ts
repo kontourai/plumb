@@ -193,6 +193,74 @@ test("the output tail keeps stdout and stderr in the order they were written", (
   }
 });
 
+for (const [name, signal] of [["SIGTERM", "TERM"], ["SIGKILL", "KILL"]] as const) {
+  test(`a supervisor killed with ${name} still stops the repro's process group`, () => {
+    const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
+    try {
+      const late = path.join(fixture.root, "descendant-survived");
+      // The repro shell's parent is the supervisor.
+      const result = fixture.confirm(`(sleep 2; touch ${late}) & kill -${signal} $PPID; sleep 5; ${reproduced}; exit 1`);
+      assert.equal(result.status, 3, result.stderr);
+      assert.match(result.stdout, /inconclusive \(repro supervisor failed: supervisor exited/);
+      spawnSync("sleep", ["3"]);
+      assert.equal(existsSync(late), false, "the repro's group outlived its supervisor");
+      assert.equal(fixture.prompt(), undefined);
+    } finally {
+      fixture.cleanup();
+    }
+  });
+}
+
+test("a FIFO at the verdict path is refused instead of blocking", () => {
+  const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="5"']);
+  try {
+    const started = Date.now();
+    const result = fixture.confirm('mkfifo "$PLUMB_VERDICT_FILE"; exit 0');
+    assert.ok(Date.now() - started < 4_000, "reading the verdict did not block");
+    assert.equal(result.status, 3, result.stderr);
+    assert.match(result.stdout, /inconclusive \(verdict file is not a regular file\)/);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test("a symlinked verdict file is refused", () => {
+  const fixture = confirmFixture();
+  try {
+    const target = path.join(fixture.root, "elsewhere");
+    writeFileSync(target, "not-reproduced\n");
+    const result = fixture.confirm(`ln -s ${target} "$PLUMB_VERDICT_FILE"; exit 0`);
+    assert.equal(result.status, 3, result.stderr);
+    assert.match(result.stdout, /inconclusive \(verdict file could not be opened \(ELOOP\)\)/);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test("output beyond the capture limit makes the run inconclusive", () => {
+  const fixture = confirmFixture();
+  try {
+    const result = fixture.confirm(`head -c 70000000 /dev/zero; ${notReproduced}; exit 0`);
+    assert.equal(result.status, 3, result.stderr);
+    assert.match(result.stdout, /inconclusive \(repro output exceeded 67108864 bytes\)/);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test("a timeout beyond what a timer can hold is refused before the repro runs", () => {
+  const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="2000001"']);
+  try {
+    const marker = path.join(fixture.root, "repro-ran");
+    const result = fixture.confirm(`touch ${marker}; ${notReproduced}; exit 0`);
+    assert.equal(result.status, 1);
+    assert.equal(result.stderr.trim(), "plumb: PLUMB_REPRO_TIMEOUT_SECS must be at most 2000000, got 2000001");
+    assert.equal(existsSync(marker), false);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
 for (const key of ["PLUMB_REPRO_TIMEOUT_SECS", "PLUMB_ESCALATE_DAILY_CAP", "PLUMB_ESCALATE_COOLDOWN_SECS"]) {
   test(`a malformed ${key} is refused before the repro runs`, () => {
     const fixture = confirmFixture([`${key}="1e3"`]);

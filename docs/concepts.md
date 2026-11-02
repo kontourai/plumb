@@ -14,8 +14,8 @@ flowchart LR
   checks -- "output" --> log["LOG_FILE"]
   checks -- "non-zero exit" --> guards
   finding["reported finding"] --> confirm["plumb confirm"]
-  confirm -- "repro fails" --> guards
-  confirm -- "repro passes or cannot run" --> flog["findings log"]
+  confirm -- "reproduced" --> guards
+  confirm -- "not-reproduced or inconclusive" --> flog["findings log"]
   esc --> guards["lock, cooldown, daily cap"]
   guards -- "suppressed" --> elog["escalations log"]
   guards -- "allowed" --> clone["agent clone reset to origin/main"]
@@ -65,7 +65,13 @@ missing browser and a real defect can both exit 1. So the repro must say
 what it observed. Plumb sets `PLUMB_VERDICT_FILE`, and the repro writes
 `reproduced` (the defect showed) or `not-reproduced` (the expected behavior
 held) to that file. Write the verdict only once the assertion that decides it
-has actually run.
+has actually run. Plumb trims surrounding whitespace and otherwise matches the
+two words exactly, in lowercase. The verdict must be a regular file: a
+symlink, FIFO, or device is refused, and only its first 64 bytes are read.
+
+The verdict is a contract with whoever writes the repro, not independent proof
+that the assertion ran correctly. A repro that writes `reproduced` and then
+crashes or is killed with a non-zero exit still counts as reproduced.
 
 1. Reads the finding file. A missing or blank file is an error. Validates
    `PLUMB_REPRO_TIMEOUT_SECS` and the guard settings before running anything.
@@ -73,16 +79,24 @@ has actually run.
    in its own process group, with the config's variables in its environment.
    Stdout and stderr go to one file, so their order is kept.
 3. Stops the whole process group after `PLUMB_REPRO_TIMEOUT_SECS` (default
-   900; `0` means no deadline), and again when the repro's shell exits, so
-   processes it left behind do not outlive it. A process that moves itself
-   into a new session or process group escapes this cleanup.
+   900, at most 2000000; `0` means no deadline), and again when the repro's
+   shell exits, so processes it left behind do not outlive it. The supervisor
+   also kills the group if it is itself signalled, and if it dies without
+   reporting, plumb kills the group it recorded. A process that moves itself
+   into a new session or process group escapes this cleanup, and so does the
+   repro if plumb itself is killed.
+   Output is capped at 64 MiB. The cap is checked every 100 ms and when the
+   repro exits, so a fast writer can overshoot it on disk before it is
+   stopped. A run over the cap is inconclusive. Only the output's tail is read
+   back.
 4. Classifies the result:
    - **reproduced**: the verdict is `reproduced` and the repro exited
      non-zero.
    - **not-reproduced**: the verdict is `not-reproduced` and the repro exited
      0.
    - **inconclusive**: anything else. That covers no verdict, a verdict that
-     disagrees with the exit status, a timeout, a signal, or a repro that
+     disagrees with the exit status, an invalid verdict file, output over the
+     cap, a timeout, a signal that ends the repro's shell, or a repro that
      could not start.
 5. Appends one record to the findings log: the context, the repro command
    (first 300 bytes), its output (last 1500 bytes), the finding (first 1500

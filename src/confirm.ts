@@ -1,5 +1,17 @@
 import { spawnSync } from "node:child_process";
-import { appendFileSync, closeSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  closeSync,
+  constants as fsConstants,
+  fstatSync,
+  mkdirSync,
+  mkdtempSync,
+  openSync,
+  readFileSync,
+  readSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { PlumbConfig } from "./config.js";
@@ -33,29 +45,47 @@ const defaultTimeoutSeconds = 900;
 // Extra time for the supervisor to report after it kills a timed-out repro.
 const supervisorGraceMs = 10_000;
 
+// Captured output beyond this stops the repro; only the tail is ever read.
+const outputLimitBytes = 64 * 1024 * 1024;
+// Node timers hold at most 2^31-1 ms; keep the deadline plus grace inside it.
+const maxTimeoutSeconds = 2_000_000;
+
 /**
  * Runs the repro in its own process group so a deadline kills every process it
  * started, not just its shell, and so processes left behind when it exits are
- * cleaned up too. Writes { code, signal, timedOut, error } to the result path.
+ * cleaned up too. It also kills the group if it is itself signalled, and
+ * records the group id so the caller can clean up if it dies without a result.
+ * Writes { code, signal, timedOut, outputLimitExceeded, error } to the result path.
  */
 const supervisorSource = `
 const { spawn } = require("node:child_process");
-const { writeFileSync } = require("node:fs");
-const [resultPath, timeoutMs] = process.argv.slice(1);
+const { statSync, writeFileSync } = require("node:fs");
+const [resultPath, timeoutMs, outputPath, outputLimit] = process.argv.slice(1);
 let timedOut = false;
+let outputLimitExceeded = false;
 let done = false;
+const killGroup = () => { try { process.kill(-child.pid, "SIGKILL"); } catch {} };
+const checkOutput = () => {
+  try {
+    if (statSync(outputPath).size > Number(outputLimit)) { outputLimitExceeded = true; killGroup(); }
+  } catch {}
+};
 const finish = (result) => {
   if (done) return;
   done = true;
-  try { process.kill(-child.pid, "SIGKILL"); } catch {}
-  writeFileSync(resultPath, JSON.stringify({ ...result, timedOut }));
+  killGroup();
+  checkOutput();
+  writeFileSync(resultPath, JSON.stringify({ ...result, timedOut, outputLimitExceeded }));
   process.exit(0);
 };
 const child = spawn("bash", ["-c", 'set -o pipefail; eval "$PLUMB_REPRO_CMD"'], { detached: true, stdio: ["ignore", "inherit", "inherit"] });
+if (child.pid) writeFileSync(resultPath + ".pgid", String(child.pid));
+for (const signal of ["SIGTERM", "SIGINT", "SIGHUP"]) process.on(signal, () => { killGroup(); process.exit(1); });
 child.on("error", (error) => finish({ error: String(error && error.message || error) }));
 child.on("exit", (code, signal) => finish({ code, signal }));
 const ms = Number(timeoutMs);
-if (ms > 0) setTimeout(() => { timedOut = true; try { process.kill(-child.pid, "SIGKILL"); } catch {} }, ms).unref();
+if (ms > 0) setTimeout(() => { timedOut = true; killGroup(); }, ms).unref();
+setInterval(checkOutput, 100).unref();
 `;
 
 export function findingsLogPath(logFile: string): string {
@@ -72,11 +102,55 @@ function tail(buffer: Buffer, bytes: number): string {
   return `[output truncated]\n${buffer.subarray(buffer.length - bytes).toString("utf8")}`;
 }
 
-function readOrEmpty(file: string): Buffer {
+/** Reads at most the last `bytes` of a file without loading the rest. */
+function readTail(file: string, bytes: number): Buffer {
+  let descriptor: number | undefined;
   try {
-    return readFileSync(file);
+    descriptor = openSync(file, "r");
+    const size = fstatSync(descriptor).size;
+    const length = Math.min(size, bytes);
+    const buffer = Buffer.alloc(length);
+    readSync(descriptor, buffer, 0, length, size - length);
+    return buffer;
   } catch {
     return Buffer.alloc(0);
+  } finally {
+    if (descriptor !== undefined) closeSync(descriptor);
+  }
+}
+
+type VerdictRead = { verdict?: string; invalid?: string };
+
+/**
+ * Reads the verdict without following links or blocking: a FIFO, device, or
+ * symlink in the verdict path is refused instead of hanging plumb.
+ */
+function readVerdict(file: string): VerdictRead {
+  let descriptor: number | undefined;
+  try {
+    descriptor = openSync(file, fsConstants.O_RDONLY | fsConstants.O_NONBLOCK | fsConstants.O_NOFOLLOW);
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    return code === "ENOENT" ? {} : { invalid: `verdict file could not be opened (${code})` };
+  }
+  try {
+    const stat = fstatSync(descriptor);
+    if (!stat.isFile()) return { invalid: "verdict file is not a regular file" };
+    const buffer = Buffer.alloc(Math.min(stat.size, 64));
+    const read = readSync(descriptor, buffer, 0, buffer.length, 0);
+    const verdict = buffer.subarray(0, read).toString("utf8").trim();
+    return verdict ? { verdict } : {};
+  } finally {
+    closeSync(descriptor);
+  }
+}
+
+function killGroupFromFile(pgidPath: string): void {
+  try {
+    const pgid = Number(readFileSync(pgidPath, "utf8"));
+    if (Number.isSafeInteger(pgid) && pgid > 1) process.kill(-pgid, "SIGKILL");
+  } catch {
+    // Nothing recorded or the group is already gone.
   }
 }
 
@@ -84,6 +158,7 @@ interface SupervisorResult {
   code?: number | null;
   signal?: string | null;
   timedOut?: boolean;
+  outputLimitExceeded?: boolean;
   error?: string;
 }
 
@@ -111,6 +186,9 @@ export function confirmFinding(
   const finding = readFileSync(findingPath, "utf8").trim();
   if (!finding) throw new Error(`finding file is empty: ${findingPath}`);
   const timeoutSeconds = nonNegativeInteger(config.PLUMB_REPRO_TIMEOUT_SECS, defaultTimeoutSeconds, "PLUMB_REPRO_TIMEOUT_SECS");
+  if (timeoutSeconds > maxTimeoutSeconds) {
+    throw new Error(`PLUMB_REPRO_TIMEOUT_SECS must be at most ${maxTimeoutSeconds}, got ${timeoutSeconds}`);
+  }
   // Validate the guard settings before running anything, as plumb escalate does.
   nonNegativeInteger(config.PLUMB_ESCALATE_COOLDOWN_SECS, 0, "PLUMB_ESCALATE_COOLDOWN_SECS");
   nonNegativeInteger(config.PLUMB_ESCALATE_DAILY_CAP, 0, "PLUMB_ESCALATE_DAILY_CAP");
@@ -127,7 +205,7 @@ export function confirmFinding(
     const outputDescriptor = openSync(outputPath, "w");
     let supervisor;
     try {
-      supervisor = spawnSync(process.execPath, ["-e", supervisorSource, resultPath, String(timeoutSeconds * 1000)], {
+      supervisor = spawnSync(process.execPath, ["-e", supervisorSource, resultPath, String(timeoutSeconds * 1000), outputPath, String(outputLimitBytes)], {
         env: { ...process.env, ...config.environment, PLUMB_REPRO_CMD: reproCommand, PLUMB_VERDICT_FILE: verdictPath },
         stdio: ["ignore", outputDescriptor, outputDescriptor],
         killSignal: "SIGKILL",
@@ -136,15 +214,17 @@ export function confirmFinding(
     } finally {
       closeSync(outputDescriptor);
     }
-    const output = readOrEmpty(outputPath);
-    const verdictText = readOrEmpty(verdictPath).toString("utf8").trim();
-    const verdict = verdictText || undefined;
+    const output = readTail(outputPath, outputBytes + 1);
+    const verdictRead = readVerdict(verdictPath);
+    const verdict = verdictRead.verdict;
 
     let repro: SupervisorResult | undefined;
     try {
       repro = JSON.parse(readFileSync(resultPath, "utf8")) as SupervisorResult;
     } catch {
       repro = undefined;
+      // The supervisor died without reporting, so it may not have cleaned up.
+      killGroupFromFile(`${resultPath}.pgid`);
     }
 
     let result: ConfirmFindingResult;
@@ -153,10 +233,14 @@ export function confirmFinding(
       result = { outcome: "inconclusive", status: null, verdict, reason: `repro supervisor failed: ${why}` };
     } else if (repro.error) {
       result = { outcome: "inconclusive", status: null, verdict, reason: `repro could not run: ${repro.error}` };
+    } else if (repro.outputLimitExceeded) {
+      result = { outcome: "inconclusive", status: null, verdict, reason: `repro output exceeded ${outputLimitBytes} bytes` };
     } else if (repro.timedOut) {
       result = { outcome: "inconclusive", status: null, verdict, reason: `repro timed out after ${timeoutSeconds}s` };
     } else if (repro.code === null || repro.code === undefined) {
       result = { outcome: "inconclusive", status: null, verdict, reason: `repro was killed by ${repro.signal ?? "a signal"}` };
+    } else if (verdictRead.invalid) {
+      result = { outcome: "inconclusive", status: repro.code, reason: verdictRead.invalid };
     } else if (verdict === "reproduced" && repro.code !== 0) {
       result = { outcome: "reproduced", status: repro.code, verdict };
     } else if (verdict === "not-reproduced" && repro.code === 0) {

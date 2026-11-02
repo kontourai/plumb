@@ -116,8 +116,10 @@ An exploratory tester or audit can report findings that are not real.
 first. The repro writes its verdict, `reproduced` or `not-reproduced`, to
 `$PLUMB_VERDICT_FILE`. Plumb escalates only a `reproduced` verdict with a
 failing exit, so the agent sees the finding together with the failing repro
-output. A crashed harness, a missing verdict, a timeout, or a verdict that
-disagrees with the exit status is `inconclusive`. Nothing is escalated for
+output. A missing verdict (as when the harness crashes before its assertion),
+a timeout, or a verdict that disagrees with the exit status is
+`inconclusive`. The verdict is the repro author's claim, so write it only
+after the deciding assertion has run. Nothing is escalated for
 `inconclusive` or `not-reproduced`.
 
 ```bash
