@@ -109,6 +109,27 @@ plumb escalate database-refresh /var/log/my-app/database-refresh.log
 plumb escalate search-reindex /var/log/my-app/search-reindex.log
 ```
 
+## Confirm a finding before escalating it
+
+An exploratory tester or audit can report findings that are not real.
+`plumb confirm <context> <finding-file> <repro-command>` runs the repro command
+first. The repro writes its verdict, `reproduced` or `not-reproduced`, to
+`$PLUMB_VERDICT_FILE`. Plumb escalates only a `reproduced` verdict with a
+failing exit, so the agent sees the finding together with the failing repro
+output. A missing verdict (as when the harness crashes before its assertion),
+a timeout, or a verdict that disagrees with the exit status is
+`inconclusive`. The verdict is the repro author's claim, so write it only
+after the deciding assertion has run. Nothing is escalated for
+`inconclusive` or `not-reproduced`.
+
+```bash
+plumb confirm board-delete findings/board-delete.md \
+  './repro.sh tests/repro/board-delete.e2e.ts'
+```
+
+Write the repro to assert the intended behavior, so it reports `reproduced`
+while the defect exists. See [Confirming findings](docs/concepts.md#confirming-findings).
+
 See [`examples/job-with-escalation.sh`](examples/job-with-escalation.sh) for a
 complete two-step cron-job pattern. If you'd rather run `plumb` on a timer
 than from cron, [`systemd/plumb-checks.service`](systemd/plumb-checks.service)

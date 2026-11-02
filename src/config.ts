@@ -12,6 +12,7 @@ export interface PlumbConfig {
   PLUMB_STATE_DIR?: string;
   PLUMB_ESCALATE_COOLDOWN_SECS?: string;
   PLUMB_ESCALATE_DAILY_CAP?: string;
+  PLUMB_REPRO_TIMEOUT_SECS?: string;
   /** All variables exported while sourcing the config, for child commands. */
   environment?: Readonly<Record<string, string>>;
 }
@@ -22,6 +23,7 @@ const optionalKeys = [
   "PLUMB_STATE_DIR",
   "PLUMB_ESCALATE_COOLDOWN_SECS",
   "PLUMB_ESCALATE_DAILY_CAP",
+  "PLUMB_REPRO_TIMEOUT_SECS",
 ] as const;
 
 function defaultConfigPath(): string {

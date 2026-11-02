@@ -1,8 +1,9 @@
 # Concepts
 
-Plumb has two entry points and one shared mechanism. `plumb run` runs your
+Plumb has three entry points and one shared mechanism. `plumb run` runs your
 checks and escalates when they fail. `plumb escalate` lets any other job
-escalate its own failure. Both go through the same escalator: a set of guards,
+escalate its own failure. `plumb confirm` escalates a reported finding only
+once a repro command shows it. All three go through the same escalator: a set of guards,
 a clean agent clone, and a guardrailed prompt.
 
 ```mermaid
@@ -12,6 +13,9 @@ flowchart LR
   run --> checks["CHECKS_CMD"]
   checks -- "output" --> log["LOG_FILE"]
   checks -- "non-zero exit" --> guards
+  finding["reported finding"] --> confirm["plumb confirm"]
+  confirm -- "reproduced" --> guards
+  confirm -- "not-reproduced or inconclusive" --> flog["findings log"]
   esc --> guards["lock, cooldown, daily cap"]
   guards -- "suppressed" --> elog["escalations log"]
   guards -- "allowed" --> clone["agent clone reset to origin/main"]
@@ -49,6 +53,68 @@ Once the config has loaded and the header is written to `LOG_FILE`,
 Suppressed escalations, agent failures, and escalation errors are all side
 effects; none of them makes the run fail. This keeps the scheduler's view of
 the job separate from the health of the deployment.
+
+## Confirming findings
+
+A finding from exploratory testing, an audit, or another agent is a claim, not
+evidence. `plumb confirm <context> <finding-file> <repro-command>` turns it
+into evidence before any agent spends effort on it.
+
+An exit status alone cannot tell a failed assertion from a crashed harness: a
+missing browser and a real defect can both exit 1. So the repro must say
+what it observed. Plumb sets `PLUMB_VERDICT_FILE`, and the repro writes
+`reproduced` (the defect showed) or `not-reproduced` (the expected behavior
+held) to that file. Write the verdict only once the assertion that decides it
+has actually run. Plumb trims surrounding whitespace and otherwise matches the
+two words exactly, in lowercase. The verdict must be a regular file: a
+symlink, FIFO, or device is refused, and only its first 64 bytes are read.
+
+The verdict is a contract with whoever writes the repro, not independent proof
+that the assertion ran correctly. A repro that writes `reproduced` and then
+crashes or is killed with a non-zero exit still counts as reproduced.
+
+1. Reads the finding file. A missing or blank file is an error. Validates
+   `PLUMB_REPRO_TIMEOUT_SECS` and the guard settings before running anything.
+2. Runs the repro command as `bash -c 'set -o pipefail; eval "$PLUMB_REPRO_CMD"'`
+   in its own process group, with the config's variables in its environment.
+   Stdout and stderr go to one file, so their order is kept.
+3. Stops the whole process group after `PLUMB_REPRO_TIMEOUT_SECS` (default
+   900, at most 2000000; `0` means no deadline), and again when the repro's
+   shell exits, so processes it left behind do not outlive it. The repro does
+   not start until its group id is recorded, so there is always a group to
+   clean up. The supervisor also kills the group if it is itself signalled,
+   and if it dies without reporting, plumb kills the recorded group. A process
+   that moves itself into a new session or process group escapes this
+   cleanup, and so does the repro if plumb and its supervisor are both killed
+   with SIGKILL.
+   Output is capped at 64 MiB. The cap is checked every 100 ms and when the
+   repro exits, so a fast writer can overshoot it on disk before it is
+   stopped. A run over the cap is inconclusive. Only the output's tail is read
+   back.
+4. Classifies the result:
+   - **reproduced**: the verdict is `reproduced` and the repro exited
+     non-zero.
+   - **not-reproduced**: the verdict is `not-reproduced` and the repro exited
+     0.
+   - **inconclusive**: anything else. That covers no verdict, a verdict that
+     disagrees with the exit status, an invalid verdict file, output over the
+     cap, a timeout, a signal that ends the repro's shell, or a repro that
+     could not start.
+5. Appends one record to the findings log: the context, the repro command
+   (first 300 bytes), its output (last 1500 bytes), the finding (first 1500
+   bytes), and an `OUTCOME` line. These budgets keep the whole record inside
+   the escalation's 4000-byte evidence window.
+6. Only for **reproduced**, escalates under the given context name through
+   the usual [guards](#escalation-guards). The evidence is this run's own
+   record, so another confirmation writing to the findings log at the same
+   time cannot replace it.
+
+Write the repro to assert the behavior you expect, so it reports `reproduced`
+while the defect exists and `not-reproduced` once it is fixed. A repro that
+asserts the current behavior confirms nothing.
+
+The finding text goes into the agent's prompt. Treat findings from untrusted
+sources the way you would treat any log content you escalate.
 
 ## Escalation
 
@@ -190,6 +256,8 @@ Apart from the agent's clone in `AGENT_WORKDIR`, plumb keeps its files beside
   replaced by `-escalations.log`, gets agent output and `SUPPRESS` lines.
   Escalations from `plumb escalate` write here too, whatever log file they
   were given as evidence.
+- The findings log, `LOG_FILE` with a trailing `.log` replaced by
+  `-findings.log`, gets one record per `plumb confirm`.
 - The state directory, `PLUMB_STATE_DIR` or a `state` directory beside
   `LOG_FILE`, holds the lock, cooldown, counter, and `deploy-sha` files.
 

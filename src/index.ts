@@ -1,3 +1,10 @@
+export {
+  confirmFinding,
+  findingsLogPath,
+  type ConfirmFindingOptions,
+  type ConfirmFindingResult,
+  type FindingOutcome,
+} from "./confirm.js";
 export { loadConfig, type PlumbConfig } from "./config.js";
 export {
   escalate,

@@ -9,9 +9,10 @@ pieces behave together, read [Concepts](concepts.md).
 ```text
 plumb run [--context <key>=<value>]
 plumb escalate <context-name> <log-file>
+plumb confirm <context-name> <finding-file> <repro-command>
 ```
 
-Both commands load the config first (see [Configuration](#configuration)). Any
+Every command loads the config first (see [Configuration](#configuration)). Any
 error, including a config error, is printed as `plumb: <message>` on stderr
 with exit code 1.
 
@@ -41,6 +42,27 @@ context name per failure mode so they do not share a lock or cooldown.
 Exits 0 when the agent ran successfully and when a guard suppressed the
 escalation. Exits 1 when the config is invalid, a guard setting is not a
 plain non-negative integer, or the agent command fails.
+
+### plumb confirm
+
+Runs `<repro-command>` and escalates the finding in `<finding-file>` under
+`<context-name>` only if the repro fails. See
+[Confirming findings](concepts.md#confirming-findings). Prints one line,
+`plumb: <context-name> <outcome> (<detail>)`, on stdout.
+
+| Outcome | Meaning | Exit |
+| --- | --- | --- |
+| `reproduced` | The repro wrote `reproduced` to `PLUMB_VERDICT_FILE` and exited non-zero. The finding was escalated or a guard suppressed it. | 0 |
+| `not-reproduced` | The repro wrote `not-reproduced` and exited 0. Nothing was escalated. | 2 |
+| `inconclusive` | No verdict, a verdict that disagrees with the exit status, an invalid verdict file, output over 64 MiB, a timeout, a signal, or a start failure. Nothing was escalated. | 3 |
+
+Exits 1 when the config is invalid, the finding file is missing or blank,
+`PLUMB_REPRO_TIMEOUT_SECS` or a guard setting is malformed or
+`PLUMB_REPRO_TIMEOUT_SECS` exceeds `2000000` (both checked before the repro
+runs), or the agent command fails.
+
+The repro sees two extra variables: `PLUMB_REPRO_CMD`, the command itself,
+and `PLUMB_VERDICT_FILE`, where it writes its verdict.
 
 ### Usage and exit codes
 
@@ -82,10 +104,11 @@ environment counts as configured even when the file does not set it.
 | `PLUMB_STATE_DIR` | no | `state` beside `LOG_FILE` | Directory for lock, cooldown, counter, and `deploy-sha` files. |
 | `PLUMB_ESCALATE_COOLDOWN_SECS` | no | `21600` | Per-context cooldown in seconds. Also the age after which a lock whose process has exited is treated as stale. |
 | `PLUMB_ESCALATE_DAILY_CAP` | no | `8` | Escalations allowed per local day, across all contexts. |
+| `PLUMB_REPRO_TIMEOUT_SECS` | no | `900` | Deadline for a `plumb confirm` repro command, in seconds, at most `2000000`. `0` means no deadline. |
 
 A required key that is unset or empty fails with
 `Missing required config key: <KEY>`. The two guard settings must be plain
-decimal digits, such as `0`, `8`, or `21600`. Anything else, including an empty
+decimal digits, such as `0`, `8`, or `21600`; so must `PLUMB_REPRO_TIMEOUT_SECS`. Anything else, including an empty
 value, surrounding spaces, `1e3`, `0x10`, or `-1`, makes escalation fail with
 `<KEY> must be a non-negative integer, got "<value>"`. To use a default, leave
 the key unset rather than empty. A daily cap of `0` suppresses every
@@ -98,6 +121,7 @@ holds while its escalation runs.
 | --- | --- | --- |
 | `LOG_FILE` | `plumb run` | `=== <timestamp> plumb checks[ context=<key>=<value>]` headers and checks output. |
 | `LOG_FILE` with `.log` replaced by `-escalations.log` | escalations | Agent output and `<timestamp> SUPPRESS <context> (<reason>)` lines. |
+| `LOG_FILE` with `.log` replaced by `-findings.log` | `plumb confirm` | One record per run: header, repro command and output, finding, `OUTCOME` line. |
 | `<state>/lock-<context>` | escalations | Held while an escalation for the context runs. |
 | `<state>/last-<context>[_3adeploy_3a<sha>]` | escalations | Unix time of the last escalation, for the cooldown. |
 | `<state>/count-YYYYMMDD` | escalations | Number of escalations that day; deleted after three days. |
@@ -122,8 +146,7 @@ run(config, { context: `deploy=${process.env.DEPLOY_SHA}` });
 escalate("custom-job", "/var/log/custom-job.log", config);
 ```
 
-The package exports three functions and their types. All three are
-synchronous.
+The package exports these functions and their types. All are synchronous.
 
 ### loadConfig
 
@@ -183,11 +206,36 @@ command.
 | `guardSignature` | `string` | Keys the cooldown to `<context>:<signature>` while sharing the context's lock. `plumb run` uses `deploy:<sha>`. |
 | `runContext` | `string` | Adds `Run context: <value>.` to the prompt when there is no `deployContext`. |
 
+### confirmFinding
+
+```ts
+confirmFinding(
+  context: string,
+  findingPath: string,
+  reproCommand: string,
+  config: PlumbConfig,
+  options?: ConfirmFindingOptions,
+): ConfirmFindingResult
+```
+
+The function behind `plumb confirm`. `ConfirmFindingOptions` has
+`escalateOptions?: EscalateOptions`, passed to the escalation; when it sets no
+`runContext`, plumb supplies one that says the finding was confirmed by a
+failing repro. `ConfirmFindingResult` is `{ outcome, status, verdict?, reason?,
+escalation? }`: `outcome` is a `FindingOutcome`
+(`"reproduced" | "not-reproduced" | "inconclusive"`), `status` is the repro's
+exit status or `null`, `verdict` is what the repro wrote to
+`PLUMB_VERDICT_FILE`, `reason` explains an inconclusive result, and
+`escalation` is the `EscalateResult`, present only when reproduced.
+`findingsLogPath(logFile)` returns the findings log path. Throws on a missing
+or blank finding file, a malformed setting, or a failed agent command.
+
 ## Troubleshooting
 
 | Symptom | Cause |
 | --- | --- |
 | `plumb: Missing required config key: REPO_URL` | `PLUMB_CONFIG` is unset or points at the wrong file, or the file leaves a required key empty. A preceding `No such file or directory` line from bash names the path it tried. |
+| `plumb confirm` prints `inconclusive (repro exited <N> without writing a verdict ...)` | The repro never reached its deciding assertion, for example because a command was missing or the harness crashed, or it does not write `PLUMB_VERDICT_FILE`. Its output is in the findings log. |
 | `plumb: ignoring malformed context ...` | The `--context` value failed validation, for example a `deploy` value that is not 7 to 64 hex digits. The run continued without it. |
 | Usage text and exit 1 | The arguments did not match a form above, such as `--context=deploy=...` or `plumb escalate` with one argument. |
 | A check failed but no agent ran | Look for a `SUPPRESS` line in the escalations log: the lock, cooldown, or daily cap stopped it. |
