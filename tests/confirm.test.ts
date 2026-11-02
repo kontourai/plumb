@@ -252,16 +252,19 @@ test("Ctrl-C to plumb's process group also stops the detached repro", async () =
   const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
   const pidFile = path.join(fixture.root, "descendant.pid");
   let pid: number | undefined;
+  let cli: ReturnType<typeof spawn> | undefined;
+  let exited: Promise<unknown> | undefined;
   try {
     // plumb and its supervisor share a foreground group, as in a terminal; the
     // repro runs in its own group and never sees the SIGINT.
-    const cli = spawn(process.execPath, [plumbBin, "confirm", "board-delete", fixture.finding,
+    cli = spawn(process.execPath, [plumbBin, "confirm", "board-delete", fixture.finding,
       `${descendant(pidFile)}; sleep 30`], {
       detached: true,
       stdio: "ignore",
       env: { ...process.env, PLUMB_CONFIG: path.join(fixture.root, "plumb.config") },
     });
-    const exited = new Promise((resolve) => cli.on("exit", resolve));
+    const running = cli;
+    exited = new Promise((resolve) => running.on("exit", resolve));
     for (let waited = 0; !existsSync(pidFile) && waited < 10_000; waited += 50) {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
@@ -271,21 +274,39 @@ test("Ctrl-C to plumb's process group also stops the detached repro", async () =
     await exited;
     assert.ok(await settlesDead(pid), "the repro's group outlived an interrupted plumb");
   } finally {
+    // On an early failure, plumb, its supervisor and the repro may still run.
+    if (cli?.pid !== undefined && cli.exitCode === null && cli.signalCode === null) {
+      try { process.kill(-cli.pid, "SIGKILL"); } catch {}
+      await exited;
+    }
+    if (pid === undefined && existsSync(pidFile)) {
+      try { pid = Number(readFileSync(pidFile, "utf8").trim()) || undefined; } catch {}
+    }
     reap(pid);
     fixture.cleanup();
   }
 });
 
-test("a supervisor that dies before recording the group never runs the repro", () => {
+test("a supervisor that dies before recording the group never runs the repro", async () => {
   const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
+  const shellPidFile = path.join(fixture.root, "shell.pid");
+  let shellPid: number | undefined;
   try {
     // Preloaded into every node process plumb starts; only the supervisor
-    // (whose first argument is the result path) is affected. It is killed at
-    // the moment it would publish the group id, after the shell has started.
+    // (whose first argument is the result path) is affected. It records the
+    // repro shell's pid, then is killed at the moment it would publish the
+    // group id, after the shell has started.
     const preload = path.join(fixture.root, "crash-before-pgid.cjs");
     writeFileSync(preload, [
       'const fs = require("node:fs");',
+      'const childProcess = require("node:child_process");',
       'if ((process.argv[1] || "").endsWith("result.json")) {',
+      '  const spawn = childProcess.spawn;',
+      '  childProcess.spawn = (...args) => {',
+      '    const child = spawn(...args);',
+      `    fs.writeFileSync(${JSON.stringify(shellPidFile)}, String(child.pid));`,
+      '    return child;',
+      '  };',
       '  const rename = fs.renameSync;',
       '  fs.renameSync = (from, to) => {',
       '    if (String(to).endsWith(".pgid")) process.kill(process.pid, "SIGKILL");',
@@ -300,10 +321,14 @@ test("a supervisor that dies before recording the group never runs the repro", (
     });
     assert.equal(result.status, 3, result.stderr);
     assert.match(result.stdout, /inconclusive \(repro supervisor failed: supervisor exited SIGKILL\)/);
-    spawnSync("sleep", ["0.5"]);
+    shellPid = readPid(shellPidFile);
+    // The shell must end on its own: the closed gate makes it exit. Only then
+    // is the absence of the marker evidence that the repro never ran.
+    assert.ok(await settlesDead(shellPid), "the gated shell exited");
     assert.equal(existsSync(ran), false, "the repro ran without a recorded group");
     assert.equal(fixture.prompt(), undefined);
   } finally {
+    if (shellPid !== undefined && alive(shellPid)) process.kill(-shellPid, "SIGKILL");
     fixture.cleanup();
   }
 });

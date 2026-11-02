@@ -66,7 +66,8 @@ let outputLimitExceeded = false;
 let done = false;
 const pgidPath = resultPath + ".pgid";
 // Once this process has killed the group itself, drop the recorded id so the
-// caller never signals a group number that may since have been reused.
+// caller only falls back to it after an unclean death. A reused group number
+// remains possible in that case if the caller's fallback is delayed.
 const killGroup = () => { try { process.kill(-child.pid, "SIGKILL"); } catch {} };
 const forgetGroup = () => { try { unlinkSync(pgidPath); } catch {} };
 const checkOutput = () => {
