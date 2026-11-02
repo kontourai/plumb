@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -210,6 +210,33 @@ for (const [name, signal] of [["SIGTERM", "TERM"], ["SIGKILL", "KILL"]] as const
     }
   });
 }
+
+test("Ctrl-C to plumb's process group also stops the detached repro", async () => {
+  const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
+  try {
+    const started = path.join(fixture.root, "repro-started");
+    const late = path.join(fixture.root, "descendant-survived");
+    // plumb and its supervisor share a foreground group, as in a terminal; the
+    // repro runs in its own group and never sees the SIGINT.
+    const cli = spawn(process.execPath, [plumbBin, "confirm", "board-delete", fixture.finding,
+      `touch ${started}; (sleep 3; touch ${late}) & sleep 20`], {
+      detached: true,
+      stdio: "ignore",
+      env: { ...process.env, PLUMB_CONFIG: path.join(fixture.root, "plumb.config") },
+    });
+    const exited = new Promise((resolve) => cli.on("exit", resolve));
+    for (let waited = 0; !existsSync(started) && waited < 10_000; waited += 100) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    assert.ok(existsSync(started), "the repro started");
+    process.kill(-cli.pid!, "SIGINT");
+    await exited;
+    await new Promise((resolve) => setTimeout(resolve, 4_000));
+    assert.equal(existsSync(late), false, "the repro's group outlived an interrupted plumb");
+  } finally {
+    fixture.cleanup();
+  }
+});
 
 test("a FIFO at the verdict path is refused instead of blocking", () => {
   const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="5"']);
