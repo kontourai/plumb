@@ -73,8 +73,20 @@ function readPid(pidFile: string): number {
   return pid;
 }
 
+/**
+ * Kills a recorded descendant and the rest of its process group: the detached
+ * repro shell and anything else it started. Never the test runner's own group.
+ */
 function reap(pid: number | undefined): void {
-  if (pid !== undefined && alive(pid)) process.kill(pid, "SIGKILL");
+  if (pid === undefined || !alive(pid)) return;
+  const pgid = Number(spawnSync("ps", ["-o", "pgid=", "-p", String(pid)], { encoding: "utf8" }).stdout.trim());
+  const ownGroup = Number(spawnSync("ps", ["-o", "pgid=", "-p", String(process.pid)], { encoding: "utf8" }).stdout.trim());
+  try {
+    if (Number.isSafeInteger(pgid) && pgid > 1 && pgid !== ownGroup) process.kill(-pgid, "SIGKILL");
+    else process.kill(pid, "SIGKILL");
+  } catch {
+    // Already gone.
+  }
 }
 
 const reproduced = 'echo reproduced > "$PLUMB_VERDICT_FILE"';
