@@ -11,3 +11,4 @@ CONTEXT_DOCS="docs/AUTOMATION.md docs/DEPLOY.md"       # agent reads these first
 # deploy contexts store the latest valid SHA at $PLUMB_STATE_DIR/deploy-sha
 # PLUMB_ESCALATE_COOLDOWN_SECS="21600"        # 6h per context
 # PLUMB_ESCALATE_DAILY_CAP="8"                # all contexts combined, per day
+# PLUMB_REPRO_TIMEOUT_SECS="900"             # plumb confirm: repro deadline, 0 = none

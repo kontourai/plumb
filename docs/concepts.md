@@ -1,8 +1,9 @@
 # Concepts
 
-Plumb has two entry points and one shared mechanism. `plumb run` runs your
+Plumb has three entry points and one shared mechanism. `plumb run` runs your
 checks and escalates when they fail. `plumb escalate` lets any other job
-escalate its own failure. Both go through the same escalator: a set of guards,
+escalate its own failure. `plumb confirm` escalates a reported finding only
+once a repro command shows it. All three go through the same escalator: a set of guards,
 a clean agent clone, and a guardrailed prompt.
 
 ```mermaid
@@ -12,6 +13,9 @@ flowchart LR
   run --> checks["CHECKS_CMD"]
   checks -- "output" --> log["LOG_FILE"]
   checks -- "non-zero exit" --> guards
+  finding["reported finding"] --> confirm["plumb confirm"]
+  confirm -- "repro fails" --> guards
+  confirm -- "repro passes or cannot run" --> flog["findings log"]
   esc --> guards["lock, cooldown, daily cap"]
   guards -- "suppressed" --> elog["escalations log"]
   guards -- "allowed" --> clone["agent clone reset to origin/main"]
@@ -49,6 +53,40 @@ Once the config has loaded and the header is written to `LOG_FILE`,
 Suppressed escalations, agent failures, and escalation errors are all side
 effects; none of them makes the run fail. This keeps the scheduler's view of
 the job separate from the health of the deployment.
+
+## Confirming findings
+
+A finding from exploratory testing, an audit, or another agent is a claim, not
+evidence. `plumb confirm <context> <finding-file> <repro-command>` turns it
+into evidence before any agent spends effort on it:
+
+1. Reads the finding file. A missing or blank file is an error.
+2. Runs the repro command as `bash -c 'set -uo pipefail; eval "$PLUMB_REPRO_CMD"'`
+   with the config's variables in its environment, stopping it after
+   `PLUMB_REPRO_TIMEOUT_SECS` (default 900; `0` means no deadline).
+3. Classifies the result:
+   - **reproduced**: the repro exited non-zero, other than 126 or 127.
+   - **not-reproduced**: the repro exited 0.
+   - **inconclusive**: the repro could not show anything. It failed to start,
+     timed out, was killed by a signal, or exited 126 or 127, which bash uses
+     for a command that cannot run or does not exist.
+4. Appends one record to the findings log: the finding (first 1500 bytes),
+   the repro command, its combined output (last 1500 bytes), and an
+   `OUTCOME` line.
+5. Only for **reproduced**, escalates under the given context name with the
+   findings log as evidence, through the usual
+   [guards](#escalation-guards).
+
+The repro decides, so write it to assert the behavior you expect. It must fail
+while the defect exists and pass once it is fixed. A repro that asserts the
+current behavior confirms nothing.
+
+On a timeout plumb stops the repro's shell. Processes that the repro started,
+such as a browser, may keep running. Have long repros clean up after
+themselves.
+
+The finding text goes into the agent's prompt. Treat findings from untrusted
+sources the way you would treat any log content you escalate.
 
 ## Escalation
 
@@ -190,6 +228,8 @@ Apart from the agent's clone in `AGENT_WORKDIR`, plumb keeps its files beside
   replaced by `-escalations.log`, gets agent output and `SUPPRESS` lines.
   Escalations from `plumb escalate` write here too, whatever log file they
   were given as evidence.
+- The findings log, `LOG_FILE` with a trailing `.log` replaced by
+  `-findings.log`, gets one record per `plumb confirm`.
 - The state directory, `PLUMB_STATE_DIR` or a `state` directory beside
   `LOG_FILE`, holds the lock, cooldown, counter, and `deploy-sha` files.
 

@@ -26,6 +26,7 @@
       "covers": [
         "src/cli.ts",
         "src/config.ts",
+        "src/confirm.ts",
         "src/index.ts"
       ]
     },

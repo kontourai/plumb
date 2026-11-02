@@ -40,7 +40,7 @@ export interface EscalateOptions {
   runContext?: string;
 }
 
-function nonNegativeInteger(value: string | undefined, fallback: number, name: string): number {
+export function nonNegativeInteger(value: string | undefined, fallback: number, name: string): number {
   if (value === undefined) return fallback;
   // Plain decimal digits only. Number() would read "" as 0 (an empty daily cap
   // then suppresses every escalation) and accept " 8 ", "1e3", and "0x10".
