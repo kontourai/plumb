@@ -73,17 +73,30 @@ function readPid(pidFile: string): number {
   return pid;
 }
 
+function psField(field: string, pid: number): string | undefined {
+  const result = spawnSync("ps", ["-o", `${field}=`, "-p", String(pid)], { encoding: "utf8" });
+  if (result.status !== 0) return undefined;
+  const value = result.stdout.trim();
+  return value || undefined;
+}
+
 /**
- * Kills a recorded descendant and the rest of its process group: the detached
- * repro shell and anything else it started. Never the test runner's own group.
+ * Kills a recorded descendant and the rest of its repro group. Fails closed:
+ * it acts only when the pid is still the fixture's `sleep 30`, its group
+ * leader is plumb's gated repro shell, and that group is not the test
+ * runner's. Any failed lookup or mismatch (for example a recycled pid) kills
+ * nothing.
  */
 function reap(pid: number | undefined): void {
   if (pid === undefined || !alive(pid)) return;
-  const pgid = Number(spawnSync("ps", ["-o", "pgid=", "-p", String(pid)], { encoding: "utf8" }).stdout.trim());
-  const ownGroup = Number(spawnSync("ps", ["-o", "pgid=", "-p", String(process.pid)], { encoding: "utf8" }).stdout.trim());
+  if (psField("command", pid) !== "sleep 30") return;
+  const pgid = Number(psField("pgid", pid));
+  const ownGroup = Number(psField("pgid", process.pid));
+  if (!Number.isSafeInteger(pgid) || pgid <= 1 || !Number.isSafeInteger(ownGroup) || ownGroup <= 1) return;
+  if (pgid === ownGroup) return;
+  if (!(psField("command", pgid) ?? "").includes("plumb_go")) return;
   try {
-    if (Number.isSafeInteger(pgid) && pgid > 1 && pgid !== ownGroup) process.kill(-pgid, "SIGKILL");
-    else process.kill(pid, "SIGKILL");
+    process.kill(-pgid, "SIGKILL");
   } catch {
     // Already gone.
   }
