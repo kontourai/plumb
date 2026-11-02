@@ -44,6 +44,39 @@ function confirmFixture(extraConfigLines: string[] = []) {
   return { root, finding, confirm, prompt, findingsLog, cleanup };
 }
 
+/** A repro fragment that starts a long-lived descendant and records its pid. */
+function descendant(pidFile: string): string {
+  return `sleep 30 & echo $! > ${pidFile}`;
+}
+
+function alive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Waits briefly for a pid to die, so cleanup that is already running can finish. */
+async function settlesDead(pid: number): Promise<boolean> {
+  for (let waited = 0; waited < 3_000; waited += 50) {
+    if (!alive(pid)) return true;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  return !alive(pid);
+}
+
+function readPid(pidFile: string): number {
+  const pid = Number(readFileSync(pidFile, "utf8").trim());
+  assert.ok(Number.isSafeInteger(pid) && pid > 1, "the repro recorded its descendant");
+  return pid;
+}
+
+function reap(pid: number | undefined): void {
+  if (pid !== undefined && alive(pid)) process.kill(pid, "SIGKILL");
+}
+
 const reproduced = 'echo reproduced > "$PLUMB_VERDICT_FILE"';
 const notReproduced = 'echo not-reproduced > "$PLUMB_VERDICT_FILE"';
 
@@ -114,34 +147,36 @@ test("a verdict that disagrees with the exit status is inconclusive", () => {
   }
 });
 
-test("the timeout is a hard deadline that also stops the repro's descendants", () => {
+test("the timeout is a hard deadline that also stops the repro's descendants", async () => {
   const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="1"']);
+  const pidFile = path.join(fixture.root, "descendant.pid");
+  let pid: number | undefined;
   try {
-    const late = path.join(fixture.root, "descendant-survived");
     const started = Date.now();
-    const result = fixture.confirm(
-      `(sleep 3; touch ${late}) & trap '' TERM; while :; do sleep 0.1; done`,
-    );
+    const result = fixture.confirm(`${descendant(pidFile)}; trap '' TERM; while :; do sleep 0.1; done`);
     assert.ok(Date.now() - started < 3_000, "the deadline held against a shell that ignores SIGTERM");
     assert.equal(result.status, 3, result.stderr);
     assert.match(result.stdout, /inconclusive \(repro timed out after 1s\)/);
-    spawnSync("sleep", ["3"]);
-    assert.equal(existsSync(late), false, "the background child was killed with the group");
+    pid = readPid(pidFile);
+    assert.ok(await settlesDead(pid), "the background child was killed with the group");
     assert.equal(fixture.prompt(), undefined);
   } finally {
+    reap(pid);
     fixture.cleanup();
   }
 });
 
-test("processes a repro leaves behind are stopped when it exits", () => {
+test("processes a repro leaves behind are stopped when it exits", async () => {
   const fixture = confirmFixture();
+  const pidFile = path.join(fixture.root, "descendant.pid");
+  let pid: number | undefined;
   try {
-    const late = path.join(fixture.root, "leftover-survived");
-    const result = fixture.confirm(`(sleep 2; touch ${late}) & ${notReproduced}; exit 0`);
+    const result = fixture.confirm(`${descendant(pidFile)}; ${notReproduced}; exit 0`);
     assert.equal(result.status, 2, result.stderr);
-    spawnSync("sleep", ["3"]);
-    assert.equal(existsSync(late), false);
+    pid = readPid(pidFile);
+    assert.ok(await settlesDead(pid));
   } finally {
+    reap(pid);
     fixture.cleanup();
   }
 });
@@ -194,18 +229,20 @@ test("the output tail keeps stdout and stderr in the order they were written", (
 });
 
 for (const [name, signal] of [["SIGTERM", "TERM"], ["SIGKILL", "KILL"]] as const) {
-  test(`a supervisor killed with ${name} still stops the repro's process group`, () => {
+  test(`a supervisor killed with ${name} still stops the repro's process group`, async () => {
     const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
+    const pidFile = path.join(fixture.root, "descendant.pid");
+    let pid: number | undefined;
     try {
-      const late = path.join(fixture.root, "descendant-survived");
       // The repro shell's parent is the supervisor.
-      const result = fixture.confirm(`(sleep 2; touch ${late}) & kill -${signal} $PPID; sleep 5; ${reproduced}; exit 1`);
+      const result = fixture.confirm(`${descendant(pidFile)}; kill -${signal} $PPID; sleep 5; ${reproduced}; exit 1`);
       assert.equal(result.status, 3, result.stderr);
       assert.match(result.stdout, /inconclusive \(repro supervisor failed: supervisor exited/);
-      spawnSync("sleep", ["3"]);
-      assert.equal(existsSync(late), false, "the repro's group outlived its supervisor");
+      pid = readPid(pidFile);
+      assert.ok(await settlesDead(pid), "the repro's group outlived its supervisor");
       assert.equal(fixture.prompt(), undefined);
     } finally {
+      reap(pid);
       fixture.cleanup();
     }
   });
@@ -213,26 +250,59 @@ for (const [name, signal] of [["SIGTERM", "TERM"], ["SIGKILL", "KILL"]] as const
 
 test("Ctrl-C to plumb's process group also stops the detached repro", async () => {
   const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
+  const pidFile = path.join(fixture.root, "descendant.pid");
+  let pid: number | undefined;
   try {
-    const started = path.join(fixture.root, "repro-started");
-    const late = path.join(fixture.root, "descendant-survived");
     // plumb and its supervisor share a foreground group, as in a terminal; the
     // repro runs in its own group and never sees the SIGINT.
     const cli = spawn(process.execPath, [plumbBin, "confirm", "board-delete", fixture.finding,
-      `touch ${started}; (sleep 3; touch ${late}) & sleep 20`], {
+      `${descendant(pidFile)}; sleep 30`], {
       detached: true,
       stdio: "ignore",
       env: { ...process.env, PLUMB_CONFIG: path.join(fixture.root, "plumb.config") },
     });
     const exited = new Promise((resolve) => cli.on("exit", resolve));
-    for (let waited = 0; !existsSync(started) && waited < 10_000; waited += 100) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    for (let waited = 0; !existsSync(pidFile) && waited < 10_000; waited += 50) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
     }
-    assert.ok(existsSync(started), "the repro started");
+    pid = readPid(pidFile);
+    assert.ok(alive(pid), "the descendant was running before the interrupt");
     process.kill(-cli.pid!, "SIGINT");
     await exited;
-    await new Promise((resolve) => setTimeout(resolve, 4_000));
-    assert.equal(existsSync(late), false, "the repro's group outlived an interrupted plumb");
+    assert.ok(await settlesDead(pid), "the repro's group outlived an interrupted plumb");
+  } finally {
+    reap(pid);
+    fixture.cleanup();
+  }
+});
+
+test("a supervisor that dies before recording the group never runs the repro", () => {
+  const fixture = confirmFixture(['PLUMB_REPRO_TIMEOUT_SECS="30"']);
+  try {
+    // Preloaded into every node process plumb starts; only the supervisor
+    // (whose first argument is the result path) is affected. It is killed at
+    // the moment it would publish the group id, after the shell has started.
+    const preload = path.join(fixture.root, "crash-before-pgid.cjs");
+    writeFileSync(preload, [
+      'const fs = require("node:fs");',
+      'if ((process.argv[1] || "").endsWith("result.json")) {',
+      '  const rename = fs.renameSync;',
+      '  fs.renameSync = (from, to) => {',
+      '    if (String(to).endsWith(".pgid")) process.kill(process.pid, "SIGKILL");',
+      '    return rename(from, to);',
+      '  };',
+      '}',
+      '',
+    ].join("\n"));
+    const ran = path.join(fixture.root, "repro-ran");
+    const result = fixture.confirm(`touch ${ran}; ${reproduced}; exit 1`, fixture.finding, {
+      NODE_OPTIONS: `--require=${preload}`,
+    });
+    assert.equal(result.status, 3, result.stderr);
+    assert.match(result.stdout, /inconclusive \(repro supervisor failed: supervisor exited SIGKILL\)/);
+    spawnSync("sleep", ["0.5"]);
+    assert.equal(existsSync(ran), false, "the repro ran without a recorded group");
+    assert.equal(fixture.prompt(), undefined);
   } finally {
     fixture.cleanup();
   }

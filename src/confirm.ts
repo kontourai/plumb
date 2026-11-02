@@ -59,12 +59,16 @@ const maxTimeoutSeconds = 2_000_000;
  */
 const supervisorSource = `
 const { spawn } = require("node:child_process");
-const { statSync, writeFileSync } = require("node:fs");
+const { renameSync, statSync, unlinkSync, writeFileSync } = require("node:fs");
 const [resultPath, timeoutMs, outputPath, outputLimit] = process.argv.slice(1);
 let timedOut = false;
 let outputLimitExceeded = false;
 let done = false;
+const pgidPath = resultPath + ".pgid";
+// Once this process has killed the group itself, drop the recorded id so the
+// caller never signals a group number that may since have been reused.
 const killGroup = () => { try { process.kill(-child.pid, "SIGKILL"); } catch {} };
+const forgetGroup = () => { try { unlinkSync(pgidPath); } catch {} };
 const checkOutput = () => {
   try {
     if (statSync(outputPath).size > Number(outputLimit)) { outputLimitExceeded = true; killGroup(); }
@@ -74,13 +78,23 @@ const finish = (result) => {
   if (done) return;
   done = true;
   killGroup();
+  forgetGroup();
   checkOutput();
   writeFileSync(resultPath, JSON.stringify({ ...result, timedOut, outputLimitExceeded }));
   process.exit(0);
 };
-const child = spawn("bash", ["-c", 'set -o pipefail; eval "$PLUMB_REPRO_CMD"'], { detached: true, stdio: ["ignore", "inherit", "inherit"] });
-if (child.pid) writeFileSync(resultPath + ".pgid", String(child.pid));
-for (const signal of ["SIGTERM", "SIGINT", "SIGHUP"]) process.on(signal, () => { killGroup(); process.exit(1); });
+for (const signal of ["SIGTERM", "SIGINT", "SIGHUP"]) process.on(signal, () => { killGroup(); forgetGroup(); process.exit(1); });
+// The shell waits for a line on stdin before running the repro. It arrives only
+// after the group id is recorded, so a supervisor that dies before that point
+// closes the pipe and the shell exits without running anything.
+const gate = 'IFS= read -r plumb_go || exit 125; exec </dev/null; set -o pipefail; eval "$PLUMB_REPRO_CMD"';
+const child = spawn("bash", ["-c", gate], { detached: true, stdio: ["pipe", "inherit", "inherit"] });
+child.stdin.on("error", () => {});
+if (child.pid) {
+  writeFileSync(pgidPath + ".tmp", String(child.pid));
+  renameSync(pgidPath + ".tmp", pgidPath);
+  child.stdin.end("go\\n");
+}
 child.on("error", (error) => finish({ error: String(error && error.message || error) }));
 child.on("exit", (code, signal) => finish({ code, signal }));
 const ms = Number(timeoutMs);

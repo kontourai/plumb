@@ -80,11 +80,13 @@ crashes or is killed with a non-zero exit still counts as reproduced.
    Stdout and stderr go to one file, so their order is kept.
 3. Stops the whole process group after `PLUMB_REPRO_TIMEOUT_SECS` (default
    900, at most 2000000; `0` means no deadline), and again when the repro's
-   shell exits, so processes it left behind do not outlive it. The supervisor
-   also kills the group if it is itself signalled, and if it dies without
-   reporting, plumb kills the group it recorded. A process that moves itself
-   into a new session or process group escapes this cleanup, and so does the
-   repro if plumb itself is killed.
+   shell exits, so processes it left behind do not outlive it. The repro does
+   not start until its group id is recorded, so there is always a group to
+   clean up. The supervisor also kills the group if it is itself signalled,
+   and if it dies without reporting, plumb kills the recorded group. A process
+   that moves itself into a new session or process group escapes this
+   cleanup, and so does the repro if plumb and its supervisor are both killed
+   with SIGKILL.
    Output is capped at 64 MiB. The cap is checked every 100 ms and when the
    repro exits, so a fast writer can overshoot it on disk before it is
    stopped. A run over the cap is inconclusive. Only the output's tail is read
