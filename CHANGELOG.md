@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/kontourai/plumb/compare/v0.2.0...v0.3.0) (2026-11-06)
+
+
+### Features
+
+* confirm a finding with a failing repro before escalating it ([#48](https://github.com/kontourai/plumb/issues/48)) ([6311d2f](https://github.com/kontourai/plumb/commit/6311d2f169109e505bbc16221824cf8f3e175b77))
+
 ## [0.2.0](https://github.com/kontourai/plumb/compare/v0.1.0...v0.2.0) (2026-10-12)
 
 
