@@ -27,7 +27,9 @@
         "src/cli.ts",
         "src/config.ts",
         "src/confirm.ts",
-        "src/index.ts"
+        "src/index.ts",
+        "src/**",
+        "bin/**"
       ]
     },
     {
